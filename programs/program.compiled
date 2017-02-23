@@ -1,0 +1,9 @@
+ldc 3
+istore
+ldc 50
+istore
+iload 0
+ldc 5
+iload 1
+iadd
+iadd

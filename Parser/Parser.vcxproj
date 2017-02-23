@@ -19,9 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C5A79EC8-390B-476F-AC7B-28C77656F8F6}</ProjectGuid>
-    <RootNamespace>CompiledLang</RootNamespace>
+    <ProjectGuid>{6D5EC9B2-FD24-4262-8322-E78459238746}</ProjectGuid>
+    <RootNamespace>Parser</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>Interpreter</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -110,17 +111,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="interpreter.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="parser\parser.cpp" />
-    <ClCompile Include="tokeniser\tokeniser.cpp" />
-    <ClCompile Include="translator\translator.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="parser\parser.h" />
-    <ClInclude Include="parser\node.h" />
-    <ClInclude Include="tokeniser\token.h" />
-    <ClInclude Include="tokeniser\tokeniser.h" />
-    <ClInclude Include="translator\translator.h" />
+    <ClInclude Include="interpreter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
