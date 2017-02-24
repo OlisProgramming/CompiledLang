@@ -2,6 +2,10 @@
 
 void Translator::translate(Node* node) {
 
+	if (node->type == NodeType::PROGRAM) {
+		send("frame_alloc " + std::to_string(static_cast<NodeProgram*>(node)->maxLocalVars));  // Allocate room for local variables on stack.
+	}
+
 	for (Node* child : node->children) translate(child);
 
 	switch (node->type) {
@@ -44,7 +48,7 @@ void Translator::translate(Node* node) {
 		break;
 
 	case NodeType::DECLARE_ASSIGN:
-		send("istore");
+		send("istore " + std::to_string(static_cast<NodeName*>(node->children[0])->obfuscatedName));
 		break;
 
 	case NodeType::PROGRAM:

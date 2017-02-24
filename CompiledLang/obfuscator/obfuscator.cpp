@@ -24,6 +24,8 @@ void obfuscateNames(Node* program, std::string symbolFname) {
 	program->print();
 	std::cout << std::endl << std::endl << std::endl;
 
+	static_cast<NodeProgram*>(program)->maxLocalVars = index;
+
 	/*for (auto& pair : map) {
 		std::cout << pair.first << ": " << pair.second << std::endl;
 	}*/

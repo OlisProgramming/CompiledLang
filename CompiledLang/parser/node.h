@@ -79,3 +79,11 @@ public:
 	NodeName(std::string name, Usage usage) : Node(NodeType::NAME), name(name), obfuscatedName(-1), usage(usage) {}
 	std::string str() override { return name + ": " + std::to_string(obfuscatedName) + " (" + dataTypeString(dataType) + ")"; }
 };
+
+class NodeProgram : public Node {
+
+public:
+	int maxLocalVars;
+
+	NodeProgram() : Node(NodeType::PROGRAM), maxLocalVars(0) {}
+};

@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
 			system("CLS");
 #endif
 			interp.exec(line);
-			std::cout << "Executed " << line << ". Stack:" << std::endl << interp.getStackDump() << std::endl << "Vars:" << std::endl << interp.getVarsDump();
+			std::cout << "Executed " << line << ". Stack:" << std::endl << interp.getStackDump();
 		}
 	}
 	catch (std::runtime_error& ex) {

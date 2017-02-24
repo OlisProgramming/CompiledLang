@@ -95,7 +95,7 @@ Node* Parser::parseStatement() {
 }
 
 Node* Parser::parseProgram() {
-	Node* program = new Node(NodeType::PROGRAM);
+	NodeProgram* program = new NodeProgram;
 	while (token().type != TokenType::FILE_END) {
 		program->addChild(parseStatement());
 	}

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <queue>
 #include <deque>
 #include <string>
 #include <sstream>
@@ -8,11 +9,10 @@
 class Interpreter {
 
 	std::deque<int> stack;
-	std::vector<int> localVars;
+	std::queue<int> frames;
 
 public:
 	Interpreter();
 	void exec(std::string command);
 	std::string getStackDump();
-	std::string getVarsDump();
 };
