@@ -29,6 +29,7 @@ private:
 	Node* parseMulDiv();
 	Node* parseArithmeticExpression();
 	Node* parseName(NodeName::Usage usage);
+	Node* parseAssign();
 	Node* parseDeclareAssign();
 
 	Node* parseStatement();

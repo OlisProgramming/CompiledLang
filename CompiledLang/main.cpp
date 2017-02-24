@@ -33,12 +33,12 @@ int main(int argc, char* argv[]) {
 
 		std::cout << std::endl << std::endl << std::endl;
 
-		checkTypes(tree, std::unordered_map<std::string, DataType>());
+		obfuscateNames(tree, "../programs/program.symbol");
 		tree->print();
 
 		std::cout << std::endl << std::endl << std::endl;
 
-		obfuscateNames(tree, "../programs/program.symbol");
+		checkTypes(tree, std::unordered_map<std::string, DataType>());
 		tree->print();
 
 		std::cout << std::endl << std::endl << std::endl;

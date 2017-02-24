@@ -17,3 +17,5 @@ iload 0
 iload 1
 iadd
 istore 2
+ldc 128
+istore 2

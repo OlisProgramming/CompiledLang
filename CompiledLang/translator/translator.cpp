@@ -48,6 +48,7 @@ void Translator::translate(Node* node) {
 		break;
 
 	case NodeType::DECLARE_ASSIGN:
+	case NodeType::ASSIGN:
 		send("istore " + std::to_string(static_cast<NodeName*>(node->children[0])->obfuscatedName));
 		break;
 

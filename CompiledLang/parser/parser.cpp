@@ -77,6 +77,18 @@ Node* Parser::parseName(NodeName::Usage usage) {
 	return new NodeName(tk.contents, usage);
 }
 
+Node* Parser::parseAssign() {
+	Node* name = parseName(NodeName::Usage::NONE);
+	//static_cast<NodeName*>(name)->dataType = DataType::INT;
+	eat(TokenType::ASSIGN);
+	Node* expr = parseArithmeticExpression();
+	Node* node = new Node(NodeType::ASSIGN);
+	node->addChild(name);
+	node->addChild(expr);
+	eat(TokenType::SEMICOLON);
+	return node;
+}
+
 Node* Parser::parseDeclareAssign() {
 	eat(TokenType::INT);
 	Node* name = parseName(NodeName::Usage::NONE);
@@ -91,7 +103,15 @@ Node* Parser::parseDeclareAssign() {
 }
 
 Node* Parser::parseStatement() {
-	return parseDeclareAssign();
+	switch (token().type) {
+	case TokenType::INT:
+		return parseDeclareAssign();
+
+	case TokenType::ID:
+		return parseAssign();
+	}
+
+	throw std::runtime_error("Invalid token to start statement with: " + token().str() + "!");
 }
 
 Node* Parser::parseProgram() {

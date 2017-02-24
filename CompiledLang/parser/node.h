@@ -8,7 +8,7 @@ enum class NodeType {
 	NUMBER,
 	NAME,
 	ADD, SUB, MUL, DIV,
-	DECLARE_ASSIGN,
+	ASSIGN, DECLARE_ASSIGN,
 	PROGRAM
 };
 
@@ -25,6 +25,7 @@ inline std::string nodeTypeString(NodeType& type) {
 	case NodeType::SUB: return "SUB";
 	case NodeType::MUL: return "MUL";
 	case NodeType::DIV: return "DIV";
+	case NodeType::ASSIGN: return "ASSIGN";
 	case NodeType::DECLARE_ASSIGN: return "DECLARE_ASSIGN";
 	case NodeType::PROGRAM: return "PROGRAM";
 	}

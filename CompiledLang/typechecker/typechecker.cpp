@@ -25,6 +25,18 @@ void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes)
 		varTypes.emplace(static_cast<NodeName*>(node->children[0])->name, node->dataType);
 		break;
 
+	case NodeType::ASSIGN:
+		checkTypes(node->children[0], varTypes);
+		checkTypes(node->children[1], varTypes);
+		if (node->children[0]->dataType != node->children[1]->dataType) {
+			throw std::runtime_error(
+				"Cannot assign value of type "
+				+ dataTypeString(node->children[1]->dataType) + " to variable of type "
+				+ dataTypeString(node->children[0]->dataType) + "!");
+		}
+		node->dataType = node->children[0]->dataType;
+		break;
+
 	case NodeType::ADD:
 	case NodeType::SUB:
 	case NodeType::MUL:
