@@ -12,3 +12,7 @@ imul
 istore
 ldc 52
 istore
+iload 0
+iload 1
+iadd
+istore

@@ -21,6 +21,9 @@ Node* Parser::parseArithmeticUnit() {
 		node = parseArithmeticExpression();
 		eat(TokenType::RPARENTH);
 	}
+	else if (tk.type == TokenType::ID) {
+		node = parseName(NodeName::Usage::LOAD_TO_STACK);
+	}
 	else
 		node = parseNumber();
 	return node;

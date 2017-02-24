@@ -7,17 +7,23 @@ Tokeniser::Tokeniser(std::string contents) : contents(contents), index(0U) {
 std::vector<Token> Tokeniser::tokenise() {
 	std::vector<Token> tokens;
 
-	while (index < contents.length()) tokens.push_back(getNextToken());
+	while (index < contents.length()) {
+		if (isspace(chr())) {
+			while (isspace(chr())) {
+				++index;
+			}
+		}
+		else {
+			tokens.push_back(getNextToken());
+		}
+	}
 	tokens.push_back(Token("", TokenType::FILE_END));
 
 	return tokens;
 }
 
 Token Tokeniser::getNextToken() {
-	while (isspace(chr())) {
-		++index;
-	}
-	
+		
 	char ch = chr();
 	if (isdigit(ch)) {
 		++index;
@@ -29,7 +35,7 @@ Token Tokeniser::getNextToken() {
 		return Token(s, TokenType::NUMBER);
 	}
 
-	if (isalpha(ch)) {
+	else if (isalpha(ch)) {
 		++index;
 		std::string s = std::string(1, ch);
 		while (isalpha(chr())) {
@@ -41,7 +47,7 @@ Token Tokeniser::getNextToken() {
 		return Token(s, TokenType::ID);
 	}
 
-	switch (ch) {
+	else switch (ch) {
 
 	case '+':
 		++index;

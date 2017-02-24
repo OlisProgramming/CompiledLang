@@ -1,6 +1,6 @@
 #include "typechecker.h"
 
-void checkTypes(Node* node) {
+void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes) {
 	if (node->dataType != DataType::UNKNOWN) return;
 
 	//std::cout << nodeTypeString(node->type) << std::endl;
@@ -10,11 +10,11 @@ void checkTypes(Node* node) {
 	case NodeType::PROGRAM:
 		node->dataType = DataType::INT;  // Could change later
 		for (Node* child : node->children)
-			checkTypes(child);
+			checkTypes(child, varTypes);
 		break;
 
 	case NodeType::DECLARE_ASSIGN:
-		checkTypes(node->children[1]);
+		checkTypes(node->children[1], varTypes);
 		if (node->children[0]->dataType != node->children[1]->dataType) {
 			throw std::runtime_error(
 				"Cannot assign value of type "
@@ -22,14 +22,15 @@ void checkTypes(Node* node) {
 				+ dataTypeString(node->children[0]->dataType) + "!");
 		}
 		node->dataType = node->children[0]->dataType;
+		varTypes.emplace(static_cast<NodeName*>(node->children[0])->name, node->dataType);
 		break;
 
 	case NodeType::ADD:
 	case NodeType::SUB:
 	case NodeType::MUL:
 	case NodeType::DIV:
-		checkTypes(node->children[0]);
-		checkTypes(node->children[1]);
+		checkTypes(node->children[0], varTypes);
+		checkTypes(node->children[1], varTypes);
 		if (node->children[0]->dataType != node->children[1]->dataType) {
 			throw std::runtime_error(
 				"Cannot apply operation " + nodeTypeString(node->type)
@@ -40,7 +41,14 @@ void checkTypes(Node* node) {
 		node->dataType = node->children[0]->dataType;
 		break;
 
+	case NodeType::NAME:
+		if (varTypes.find(static_cast<NodeName*>(node)->name) == varTypes.end()) {
+			throw std::runtime_error("Variable " + static_cast<NodeName*>(node)->name + " does not exist yet!");
+		}
+		static_cast<NodeName*>(node)->dataType = varTypes.find(static_cast<NodeName*>(node)->name)->second;
+		break;
+
 	default:
-		throw std::runtime_error("Could not check the data type of node " + nodeTypeString(node->type) + "!");
+		throw std::runtime_error("Could not check the data type of node {" + node->str() + "}!");
 	}
 }
