@@ -3,6 +3,8 @@
 
 #include "tokeniser\tokeniser.h"
 #include "parser\parser.h"
+#include "typechecker\typechecker.h"
+#include "obfuscator\obfuscator.h"
 #include "translator\translator.h"
 
 int main(int argc, char* argv[]) {
@@ -27,6 +29,16 @@ int main(int argc, char* argv[]) {
 		
 		Parser ps(tokens);
 		auto tree = ps.parse();
+		tree->print();
+
+		std::cout << std::endl << std::endl << std::endl;
+
+		checkTypes(tree);
+		tree->print();
+
+		std::cout << std::endl << std::endl << std::endl;
+
+		obfuscateNames(tree, "../programs/program.symbol");
 		tree->print();
 
 		std::cout << std::endl << std::endl << std::endl;

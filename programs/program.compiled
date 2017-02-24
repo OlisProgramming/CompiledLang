@@ -1,9 +1,14 @@
 ldc 3
-istore
-ldc 50
-istore
-iload 0
-ldc 5
-iload 1
+ldc 2
+isub
+ldc 42
+ldc 21
+idiv
 iadd
-iadd
+ldc 52
+ldc 13
+idiv
+imul
+istore
+ldc 52
+istore

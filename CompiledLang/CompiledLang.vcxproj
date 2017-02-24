@@ -111,16 +111,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="obfuscator\obfuscator.cpp" />
     <ClCompile Include="parser\parser.cpp" />
     <ClCompile Include="tokeniser\tokeniser.cpp" />
     <ClCompile Include="translator\translator.cpp" />
+    <ClCompile Include="typechecker\typechecker.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="obfuscator\obfuscator.h" />
     <ClInclude Include="parser\parser.h" />
     <ClInclude Include="parser\node.h" />
     <ClInclude Include="tokeniser\token.h" />
     <ClInclude Include="tokeniser\tokeniser.h" />
     <ClInclude Include="translator\translator.h" />
+    <ClInclude Include="typechecker\typechecker.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

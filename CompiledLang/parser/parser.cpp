@@ -4,7 +4,7 @@ Parser::Parser(std::vector<Token> tokens) : tokens(tokens), index(0U) {
 }
 
 Node* Parser::parse() {
-	return parseAddSub();
+	return parseProgram();
 }
 
 Node* Parser::parseNumber() {
@@ -66,4 +66,35 @@ Node* Parser::parseAddSub() {
 
 Node* Parser::parseArithmeticExpression() {
 	return parseAddSub();
+}
+
+Node* Parser::parseName(NodeName::Usage usage) {
+	Token& tk = token();
+	eat(TokenType::ID);
+	return new NodeName(tk.contents, usage);
+}
+
+Node* Parser::parseDeclareAssign() {
+	eat(TokenType::INT);
+	Node* name = parseName(NodeName::Usage::NONE);
+	static_cast<NodeName*>(name)->dataType = DataType::INT;
+	eat(TokenType::ASSIGN);
+	Node* expr = parseArithmeticExpression();
+	Node* node = new Node(NodeType::DECLARE_ASSIGN);
+	node->addChild(name);
+	node->addChild(expr);
+	eat(TokenType::SEMICOLON);
+	return node;
+}
+
+Node* Parser::parseStatement() {
+	return parseDeclareAssign();
+}
+
+Node* Parser::parseProgram() {
+	Node* program = new Node(NodeType::PROGRAM);
+	while (token().type != TokenType::FILE_END) {
+		program->addChild(parseStatement());
+	}
+	return program;
 }

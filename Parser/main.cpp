@@ -11,13 +11,17 @@ int main(int argc, char* argv[]) {
 		std::ifstream file("../programs/program.compiled");
 		std::string line;
 		while (std::getline(file, line)) {
+			std::cout << "Next command: " << line << std::endl;
+			system("PAUSE");
+			system("CLS");
 			interp.exec(line);
-			std::cout << "Executed " << line << ". Stack:" << std::endl << interp.getStackDump();
+			std::cout << "Executed " << line << ". Stack:" << std::endl << interp.getStackDump() << std::endl << "Vars:" << std::endl << interp.getVarsDump();
 		}
 	}
 	catch (std::runtime_error& ex) {
 		std::cout << ex.what() << std::endl;
 	}
 
+	std::cout << "Finished." << std::endl;
 	system("PAUSE");
 }

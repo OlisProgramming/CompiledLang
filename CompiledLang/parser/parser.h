@@ -28,4 +28,9 @@ private:
 	Node* parseAddSub();
 	Node* parseMulDiv();
 	Node* parseArithmeticExpression();
+	Node* parseName(NodeName::Usage usage);
+	Node* parseDeclareAssign();
+
+	Node* parseStatement();
+	Node* parseProgram();
 };

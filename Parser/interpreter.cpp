@@ -71,3 +71,11 @@ std::string Interpreter::getStackDump() {
 	}
 	return s;
 }
+
+std::string Interpreter::getVarsDump() {
+	std::string s;
+	for (unsigned int index = 0; index < localVars.size(); ++index) {
+		s += std::to_string(localVars[index]) + "\n";
+	}
+	return s;
+}

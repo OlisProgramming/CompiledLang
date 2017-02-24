@@ -8,6 +8,7 @@ std::vector<Token> Tokeniser::tokenise() {
 	std::vector<Token> tokens;
 
 	while (index < contents.length()) tokens.push_back(getNextToken());
+	tokens.push_back(Token("", TokenType::FILE_END));
 
 	return tokens;
 }
@@ -27,6 +28,19 @@ Token Tokeniser::getNextToken() {
 		}
 		return Token(s, TokenType::NUMBER);
 	}
+
+	if (isalpha(ch)) {
+		++index;
+		std::string s = std::string(1, ch);
+		while (isalpha(chr())) {
+			s += chr();
+			++index;
+		}
+		if (s == "int")
+			return Token(s, TokenType::INT);
+		return Token(s, TokenType::ID);
+	}
+
 	switch (ch) {
 
 	case '+':
@@ -52,6 +66,14 @@ Token Tokeniser::getNextToken() {
 	case ')':
 		++index;
 		return Token(")", TokenType::RPARENTH);
+
+	case '=':
+		++index;
+		return Token("=", TokenType::ASSIGN);
+
+	case ';':
+		++index;
+		return Token(";", TokenType::SEMICOLON);
 
 	default:
 		throw std::runtime_error("Invalid token: '" + std::string(1, ch) + "'.");

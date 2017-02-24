@@ -14,4 +14,5 @@ public:
 	Interpreter();
 	void exec(std::string command);
 	std::string getStackDump();
+	std::string getVarsDump();
 };

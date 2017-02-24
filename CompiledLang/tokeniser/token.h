@@ -6,6 +6,11 @@ enum class TokenType {
 	NUMBER,
 	ADD, SUB, MUL, DIV,
 	LPARENTH, RPARENTH,
+	ID,
+	INT,
+	ASSIGN,
+	SEMICOLON,
+	FILE_END
 };
 
 inline std::string tokenTypeString(TokenType type) {
@@ -17,6 +22,11 @@ inline std::string tokenTypeString(TokenType type) {
 	case TokenType::DIV: return "DIV";
 	case TokenType::LPARENTH: return "LPARENTH";
 	case TokenType::RPARENTH: return "RPARENTH";
+	case TokenType::ID: return "ID";
+	case TokenType::INT: return "INT";
+	case TokenType::ASSIGN: return "ASSIGN";
+	case TokenType::SEMICOLON: return "SEMICOLON";
+	case TokenType::FILE_END: return "FILE_END";
 	}
 	return "UNRECOGNISED TOKEN";
 }
@@ -26,5 +36,5 @@ struct Token {
 	TokenType type;
 
 	Token(std::string contents, TokenType type) : contents(contents), type(type) {}
-	std::string str() { return contents + " (" + std::to_string(static_cast<int>(type)) + ")"; }
+	std::string str() { return contents + " (" + tokenTypeString(type) + ")"; }
 };

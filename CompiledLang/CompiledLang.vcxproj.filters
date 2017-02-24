@@ -27,6 +27,12 @@
     <ClCompile Include="translator\translator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="typechecker\typechecker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="obfuscator\obfuscator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tokeniser\tokeniser.h">
@@ -42,6 +48,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="translator\translator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="typechecker\typechecker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="obfuscator\obfuscator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
