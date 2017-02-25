@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "../tokeniser/token.h"
 
 enum class NodeType {
 	NUMBER,
@@ -15,7 +16,8 @@ enum class NodeType {
 
 enum class DataType {
 	UNKNOWN,
-	INT
+	VOID,
+	INTEGER, DOUBLE, FLOAT, BOOL
 };
 
 inline std::string nodeTypeString(NodeType& type) {
@@ -38,7 +40,11 @@ inline std::string nodeTypeString(NodeType& type) {
 inline std::string dataTypeString(DataType& type) {
 	switch (type) {
 	case DataType::UNKNOWN: return "unknown type";
-	case DataType::INT: return "int";
+	case DataType::VOID: return "void";
+	case DataType::INTEGER: return "int";
+	case DataType::DOUBLE: return "double";
+	case DataType::FLOAT: return "float";
+	case DataType::BOOL: return "bool";
 	}
 	return "UNRECOGNISED TYPE";
 }
@@ -48,9 +54,10 @@ class Node {
 public:
 	NodeType type;
 	DataType dataType;
+	FilePos pos;
 	std::vector<Node*> children;
 
-	Node(NodeType type, DataType dataType = DataType::UNKNOWN) : type(type), dataType(dataType) {}
+	Node(NodeType type, FilePos pos, DataType dataType = DataType::UNKNOWN) : type(type), pos(pos), dataType(dataType) {}
 	~Node() { for (Node* child : children) delete child; }
 	void addChild(Node* node) { children.push_back(node); }
 	virtual std::string str() { return "<" + nodeTypeString(type) + " (" + dataTypeString(dataType) + ")>"; }
@@ -66,7 +73,7 @@ class NodeNumber : public Node {
 public:
 	std::string num;
 
-	NodeNumber(std::string num) : Node(NodeType::NUMBER, DataType::INT), num(num) {}
+	NodeNumber(std::string num, FilePos pos, DataType dataType) : Node(NodeType::NUMBER, pos, dataType), num(num) {}
 	std::string str() override { return num + " (" + dataTypeString(dataType) + ")"; }
 };
 
@@ -81,7 +88,7 @@ public:
 	} usage;
 	int obfuscatedName;
 
-	NodeName(std::string name, Usage usage) : Node(NodeType::NAME), name(name), obfuscatedName(-1), usage(usage) {}
+	NodeName(std::string name, FilePos pos, Usage usage) : Node(NodeType::NAME, pos), name(name), obfuscatedName(-1), usage(usage) {}
 	std::string str() override { return name + ": " + std::to_string(obfuscatedName) + " (" + dataTypeString(dataType) + ")"; }
 };
 
@@ -90,7 +97,7 @@ class NodeProgram : public Node {
 public:
 	int maxLocalVars;
 
-	NodeProgram() : Node(NodeType::PROGRAM), maxLocalVars(0) {}
+	NodeProgram(FilePos pos) : Node(NodeType::PROGRAM, pos), maxLocalVars(0) {}
 };
 
 class NodeNative : public Node {
@@ -98,7 +105,7 @@ class NodeNative : public Node {
 public:
 	std::string code;
 
-	NodeNative(std::string code) : Node(NodeType::NATIVE), code(code) {}
+	NodeNative(std::string code, FilePos pos) : Node(NodeType::NATIVE, pos), code(code) {}
 };
 
 struct FunctionSignature {
@@ -131,7 +138,7 @@ class NodeFunctionCall : public Node {
 public:
 	FunctionPointer pointer;
 
-	NodeFunctionCall() : Node(NodeType::FUNCTION_CALL) {}
+	NodeFunctionCall(FilePos pos) : Node(NodeType::FUNCTION_CALL, pos) {}
 	std::string str() override {
 		return "<FUNCTION CALL " + pointer.str() + ">";
 	}

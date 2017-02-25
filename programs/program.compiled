@@ -1,32 +1,26 @@
 goto 3
 native println
 ireturn 0
-frame_alloc 3
-ldc 3
-ldc 2
-isub
-ldc 42
-ldc 21
-idiv
+frame_alloc 5
+ildc 1
+ildc 2
 iadd
-ldc 52
-ldc 13
-idiv
-imul
+ildc 3
+iadd
 istore 0
-ldc 52
+dldc 1.5
+dldc 2.5
+dadd
+dldc 1.
+dadd
 istore 1
-iload 0
-iload 1
-iadd
+fldc 10.
+fldc 5.5
+fsub
+fldc 2.5
+fadd
 istore 2
-ldc 128
-istore 2
-ldc 9999
-goto 1
-ldc 118
-ldc 2
-imul
-goto 1
-iload 0
-goto 1
+bldc 1
+istore 3
+bldc 0
+istore 4

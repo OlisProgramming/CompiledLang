@@ -11,7 +11,9 @@
 int main(int argc, char* argv[]) {
 
 	try {
-		std::ifstream t("../programs/program.txt");
+		std::string programname = "program";
+
+		std::ifstream t("../programs/" + programname + ".txt");
 		std::string str;
 
 		t.seekg(0, std::ios::end);
@@ -21,7 +23,7 @@ int main(int argc, char* argv[]) {
 		str.assign((std::istreambuf_iterator<char>(t)),
 			std::istreambuf_iterator<char>());
 
-		Tokeniser tk(str);
+		Tokeniser tk("../programs/" + programname + ".txt", str);
 		auto tokens = tk.tokenise();
 		for (Token token : tokens)
 			std::cout << token.str() << std::endl;
@@ -43,14 +45,14 @@ int main(int argc, char* argv[]) {
 
 		std::cout << std::endl << std::endl << std::endl;
 
-		obfuscateNames(tree, "../programs/program.symbol", dependencies);
+		obfuscateNames(tree, "../programs/" + programname + ".symbol", dependencies);
 		tree->print();
 
 		std::cout << std::endl << std::endl << std::endl;
 		
 		Translator tr(tree, dependencies);
-		std::string out = tr.translate("../programs/program.symbol");
-		std::ofstream outfile("../programs/program.compiled");
+		std::string out = tr.translate("../programs/" + programname + ".symbol");
+		std::ofstream outfile("../programs/" + programname + ".compiled");
 		std::cout << out;
 		outfile << out;
 		delete tree;

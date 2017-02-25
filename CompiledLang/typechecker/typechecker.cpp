@@ -8,7 +8,7 @@ void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes,
 	switch (node->type) {
 
 	case NodeType::PROGRAM:
-		node->dataType = DataType::INT;  // Could change later
+		node->dataType = DataType::VOID;  // Could change later
 		for (Node* child : node->children)
 			checkTypes(child, varTypes, dependencies);
 		break;
@@ -19,7 +19,7 @@ void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes,
 			throw std::runtime_error(
 				"Cannot assign value of type "
 				+ dataTypeString(node->children[1]->dataType) + " to variable of type "
-				+ dataTypeString(node->children[0]->dataType) + "!");
+				+ dataTypeString(node->children[0]->dataType) + "! Error at " + node->pos.str());
 		}
 		node->dataType = node->children[0]->dataType;
 		varTypes.emplace(static_cast<NodeName*>(node->children[0])->name, node->dataType);
@@ -32,7 +32,7 @@ void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes,
 			throw std::runtime_error(
 				"Cannot assign value of type "
 				+ dataTypeString(node->children[1]->dataType) + " to variable of type "
-				+ dataTypeString(node->children[0]->dataType) + "!");
+				+ dataTypeString(node->children[0]->dataType) + "! Error at " + node->pos.str());
 		}
 		node->dataType = node->children[0]->dataType;
 		break;
@@ -48,7 +48,7 @@ void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes,
 				"Cannot apply operation " + nodeTypeString(node->type)
 				+ " to children of different types ("
 				+ dataTypeString(node->children[0]->dataType) + " and "
-				+ dataTypeString(node->children[1]->dataType) + ")!");
+				+ dataTypeString(node->children[1]->dataType) + ")! Error at " + node->pos.str());
 		}
 		node->dataType = node->children[0]->dataType;
 		break;
@@ -56,13 +56,13 @@ void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes,
 	case NodeType::NAME:
 		if (static_cast<NodeName*>(node)->usage == NodeName::Usage::FUNCTION_CALL) {
 			if (dependencies.find(static_cast<NodeName*>(node)->name) == dependencies.end()) {
-				throw std::runtime_error("Function " + static_cast<NodeName*>(node)->name + " does not exist!");
+				throw std::runtime_error("Function " + static_cast<NodeName*>(node)->name + " does not exist! Error at " + node->pos.str());
 			}
 			node->dataType = dependencies.find(static_cast<NodeName*>(node)->name)->second.signature.returnType;
 		}
 		else {
 			if (varTypes.find(static_cast<NodeName*>(node)->name) == varTypes.end()) {
-				throw std::runtime_error("Variable " + static_cast<NodeName*>(node)->name + " does not exist yet!");
+				throw std::runtime_error("Variable " + static_cast<NodeName*>(node)->name + " does not exist yet! Error at " + node->pos.str());
 			}
 			node->dataType = varTypes.find(static_cast<NodeName*>(node)->name)->second;
 		}
@@ -77,6 +77,6 @@ void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes,
 		break;
 
 	default:
-		throw std::runtime_error("Could not check the data type of node {" + node->str() + "}!");
+		throw std::runtime_error("Could not check the data type of node {" + node->str() + "}! Error at " + node->pos.str());
 	}
 }

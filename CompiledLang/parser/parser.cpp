@@ -9,8 +9,22 @@ Node* Parser::parse() {
 
 Node* Parser::parseNumber() {
 	Token& tk = token();
-	eat(TokenType::NUMBER);
-	return new NodeNumber(tk.contents);
+	switch (tk.type) {
+	case (TokenType::INTEGER):
+		eat(TokenType::INTEGER);
+		return new NodeNumber(tk.contents, tk.pos, DataType::INTEGER);
+	case (TokenType::DOUBLE):
+		eat(TokenType::DOUBLE);
+		return new NodeNumber(tk.contents, tk.pos, DataType::DOUBLE);
+	case (TokenType::FLOAT):
+		eat(TokenType::FLOAT);
+		return new NodeNumber(tk.contents, tk.pos, DataType::FLOAT);
+	case (TokenType::BOOL):
+		eat(TokenType::BOOL);
+		return new NodeNumber(tk.contents, tk.pos, DataType::BOOL);
+	}
+	eat(TokenType::INTEGER);
+	return nullptr;  // Will never get here, always quits on 'eat' because it passed through the switch.
 }
 
 Node* Parser::parseArithmeticUnit() {
@@ -30,15 +44,16 @@ Node* Parser::parseArithmeticUnit() {
 }
 
 Node* Parser::parseMulDiv() {
+	Token& tk = token();
 	Node* node = parseArithmeticUnit();
 	while (token().type == TokenType::MUL || token().type == TokenType::DIV) {
 		Node* newNode;
 		if (token().type == TokenType::MUL) {
-			newNode = new Node(NodeType::MUL);
+			newNode = new Node(NodeType::MUL, tk.pos);
 			eat(TokenType::MUL);
 		}
 		else {
-			newNode = new Node(NodeType::DIV);
+			newNode = new Node(NodeType::DIV, tk.pos);
 			eat(TokenType::DIV);
 		}
 		newNode->addChild(node);
@@ -49,15 +64,16 @@ Node* Parser::parseMulDiv() {
 }
 
 Node* Parser::parseAddSub() {
+	Token& tk = token();
 	Node* node = parseMulDiv();
 	while (token().type == TokenType::ADD || token().type == TokenType::SUB) {
 		Node* newNode;
 		if (token().type == TokenType::ADD) {
-			newNode = new Node(NodeType::ADD);
+			newNode = new Node(NodeType::ADD, tk.pos);
 			eat(TokenType::ADD);
 		}
 		else {
-			newNode = new Node(NodeType::SUB);
+			newNode = new Node(NodeType::SUB, tk.pos);
 			eat(TokenType::SUB);
 		}
 		newNode->addChild(node);
@@ -74,11 +90,12 @@ Node* Parser::parseArithmeticExpression() {
 Node* Parser::parseName(NodeName::Usage usage) {
 	Token& tk = token();
 	eat(TokenType::ID);
-	return new NodeName(tk.contents, usage);
+	return new NodeName(tk.contents, tk.pos, usage);
 }
 
 Node* Parser::parseFunctionCall() {
-	NodeFunctionCall* functioncall = new NodeFunctionCall;
+	Token& tk = token();
+	NodeFunctionCall* functioncall = new NodeFunctionCall(tk.pos);
 	Node* name = parseName(NodeName::Usage::FUNCTION_CALL);
 	functioncall->addChild(name);
 	eat(TokenType::LPARENTH);
@@ -94,11 +111,12 @@ Node* Parser::parseFunctionCall() {
 }
 
 Node* Parser::parseAssign() {
+	Token& tk = token();
 	Node* name = parseName(NodeName::Usage::NONE);
 	//static_cast<NodeName*>(name)->dataType = DataType::INT;
 	eat(TokenType::ASSIGN);
 	Node* expr = parseArithmeticExpression();
-	Node* node = new Node(NodeType::ASSIGN);
+	Node* node = new Node(NodeType::ASSIGN, tk.pos);
 	node->addChild(name);
 	node->addChild(expr);
 	eat(TokenType::SEMICOLON);
@@ -106,12 +124,32 @@ Node* Parser::parseAssign() {
 }
 
 Node* Parser::parseDeclareAssign() {
-	eat(TokenType::INT);
+	Token& tk = token();
+	DataType type;
+	switch (token().type) {
+	case TokenType::KWD_INT:
+		eat(TokenType::KWD_INT);
+		type = DataType::INTEGER;
+		break;
+	case TokenType::KWD_DOUBLE:
+		eat(TokenType::KWD_DOUBLE);
+		type = DataType::DOUBLE;
+		break;
+	case TokenType::KWD_FLOAT:
+		eat(TokenType::KWD_FLOAT);
+		type = DataType::FLOAT;
+		break;
+	default:
+		eat(TokenType::KWD_BOOL);
+		type = DataType::BOOL;
+		break;
+	}
+
 	Node* name = parseName(NodeName::Usage::NONE);
-	static_cast<NodeName*>(name)->dataType = DataType::INT;
+	static_cast<NodeName*>(name)->dataType = type;
 	eat(TokenType::ASSIGN);
 	Node* expr = parseArithmeticExpression();
-	Node* node = new Node(NodeType::DECLARE_ASSIGN);
+	Node* node = new Node(NodeType::DECLARE_ASSIGN, tk.pos);
 	node->addChild(name);
 	node->addChild(expr);
 	eat(TokenType::SEMICOLON);
@@ -120,7 +158,10 @@ Node* Parser::parseDeclareAssign() {
 
 Node* Parser::parseStatement() {
 	switch (token().type) {
-	case TokenType::INT:
+	case TokenType::KWD_INT:
+	case TokenType::KWD_DOUBLE:
+	case TokenType::KWD_FLOAT:
+	case TokenType::KWD_BOOL:
 		return parseDeclareAssign();
 
 	case TokenType::ID:
@@ -134,7 +175,8 @@ Node* Parser::parseStatement() {
 }
 
 Node* Parser::parseProgram() {
-	NodeProgram* program = new NodeProgram;
+	Token& tk = token();
+	NodeProgram* program = new NodeProgram(tk.pos);
 	while (token().type != TokenType::FILE_END) {
 		program->addChild(parseStatement());
 	}

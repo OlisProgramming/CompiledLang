@@ -33,33 +33,58 @@ void Translator::translate(Node* node) {
 
 	switch (node->type) {
 	case NodeType::NUMBER:
-		send("ldc " + dynamic_cast<NodeNumber*>(node)->num);
+		if (node->dataType == DataType::INTEGER)
+			send("ildc " + dynamic_cast<NodeNumber*>(node)->num);
+		else if (node->dataType == DataType::DOUBLE)
+			send("dldc " + dynamic_cast<NodeNumber*>(node)->num);
+		else if (node->dataType == DataType::FLOAT)
+			send("fldc " + dynamic_cast<NodeNumber*>(node)->num);
+		else if (node->dataType == DataType::BOOL)
+			send("bldc " + ((dynamic_cast<NodeNumber*>(node)->num == "true") ? std::string("1") : std::string("0")));
+		else
+			throw std::runtime_error("Cannot load constant of data type " + dataTypeString(node->dataType) + "! Error at " + node->pos.str());
 		return;
 
 	case NodeType::ADD:
-		if (node->dataType == DataType::INT)
+		if (node->dataType == DataType::INTEGER)
 			send("iadd");
+		else if (node->dataType == DataType::DOUBLE)
+			send("dadd");
+		else if (node->dataType == DataType::FLOAT)
+			send("fadd");
 		else
 			throw std::runtime_error("Cannot interpret ADD node of type " + dataTypeString(node->dataType) + "!");
 		return;
 
 	case NodeType::SUB:
-		if (node->dataType == DataType::INT)
+		if (node->dataType == DataType::INTEGER)
 			send("isub");
+		else if (node->dataType == DataType::DOUBLE)
+			send("dsub");
+		else if (node->dataType == DataType::FLOAT)
+			send("fsub");
 		else
 			throw std::runtime_error("Cannot interpret SUB node of type " + dataTypeString(node->dataType) + "!");
 		return;
 
 	case NodeType::MUL:
-		if (node->dataType == DataType::INT)
+		if (node->dataType == DataType::INTEGER)
 			send("imul");
+		else if (node->dataType == DataType::DOUBLE)
+			send("dmul");
+		else if (node->dataType == DataType::FLOAT)
+			send("fmul");
 		else
 			throw std::runtime_error("Cannot interpret MUL node of type " + dataTypeString(node->dataType) + "!");
 		return;
 
 	case NodeType::DIV:
-		if (node->dataType == DataType::INT)
+		if (node->dataType == DataType::INTEGER)
 			send("idiv");
+		else if (node->dataType == DataType::DOUBLE)
+			send("ddiv");
+		else if (node->dataType == DataType::FLOAT)
+			send("fdiv");
 		else
 			throw std::runtime_error("Cannot interpret DIV node of type " + dataTypeString(node->dataType) + "!");
 		return;

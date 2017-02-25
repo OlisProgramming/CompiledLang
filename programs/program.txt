@@ -1,8 +1,5 @@
-int variablea = ((3-2) + 42/21)*(52/13);
-int variableb = 52;
-int variablec = variablea + variableb;
-variablec = 128;
-
-println(9999);
-println(118 * 2);
-println(variablea);
+int vara = 1 + 2 + 3;
+double varb = 1.5 + 2.5 + 1.;
+float varc = 10.f - 5.5f + 2.5f;
+bool vard = true;
+bool vare = false;

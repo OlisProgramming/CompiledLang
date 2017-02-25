@@ -1,7 +1,9 @@
 VARIABLES (obfuscated name: name)
-0 (int): variablea
-1 (int): variableb
-2 (int): variablec
+0 (int): vara
+1 (double): varb
+2 (float): varc
+3 (bool): vard
+4 (bool): vare
 
 FUNCTIONS (name: line)
 println (int, return int): 1

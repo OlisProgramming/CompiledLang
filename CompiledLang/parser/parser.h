@@ -16,11 +16,11 @@ public:
 private:
 	Token token() { return token(index); }
 	Token peek(unsigned int off = 1U) { return token(index + off); }
-	Token token(unsigned int index) { return (index < tokens.size()) ? tokens[index] : Token("<NULL>", static_cast<TokenType>(0)); }
+	Token token(unsigned int index) { return (index < tokens.size()) ? tokens[index] : Token("<NULL>", static_cast<TokenType>(0), FilePos(0, 0, "")); }
 
 	void eat(TokenType type) {
 		if (token().type != type)
-			throw std::runtime_error("Token type " + tokenTypeString(token().type) + " was unexpected, expected " + tokenTypeString(type) + ".");
+			throw std::runtime_error("Token type " + tokenTypeString(token().type) + " was unexpected, expected " + tokenTypeString(type) + ". Error at " + token().pos.str() + ".");
 		++index;
 	}
 

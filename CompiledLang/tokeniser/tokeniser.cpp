@@ -1,7 +1,20 @@
 #include "tokeniser.h"
 
-Tokeniser::Tokeniser(std::string contents) : contents(contents), index(0U) {
+Tokeniser::Tokeniser(std::string fname, std::string contents) : fname(fname), contents(contents), index(0U), line(1U), column(0U) {
 
+}
+
+void Tokeniser::advance() {
+	++index;
+	++column;
+	if (chr() == '\n') {
+		column = 0;
+		++line;
+	}
+}
+
+FilePos Tokeniser::getPos() {
+	return FilePos(line, column, fname);
 }
 
 std::vector<Token> Tokeniser::tokenise() {
@@ -10,14 +23,14 @@ std::vector<Token> Tokeniser::tokenise() {
 	while (index < contents.length()) {
 		if (isspace(chr())) {
 			while (isspace(chr())) {
-				++index;
+				advance();
 			}
 		}
 		else {
 			tokens.push_back(getNextToken());
 		}
 	}
-	tokens.push_back(Token("", TokenType::FILE_END));
+	tokens.push_back(Token("", TokenType::FILE_END, getPos()));
 
 	return tokens;
 }
@@ -26,60 +39,83 @@ Token Tokeniser::getNextToken() {
 		
 	char ch = chr();
 	if (isdigit(ch)) {
-		++index;
+		advance();
 		std::string s = std::string(1, ch);
-		while (isdigit(chr())) {
+		bool hasdecimalpoint = false;
+		while (isdigit(chr()) || chr() == '.') {
 			s += chr();
-			++index;
+			if (chr() == '.') {
+				if (hasdecimalpoint)
+					throw std::runtime_error("Cannot have two decimal points in a number!");
+				hasdecimalpoint = true;
+			}
+			advance();
 		}
-		return Token(s, TokenType::NUMBER);
+		if (hasdecimalpoint) {
+			if (chr() == 'f') {
+				advance();
+				return Token(s, TokenType::FLOAT, getPos());
+			}
+			return Token(s, TokenType::DOUBLE, getPos());
+		}
+		return Token(s, TokenType::INTEGER, getPos());
 	}
 
 	else if (isalpha(ch)) {
-		++index;
+		advance();
 		std::string s = std::string(1, ch);
 		while (isalpha(chr())) {
 			s += chr();
-			++index;
+			advance();
 		}
 		if (s == "int")
-			return Token(s, TokenType::INT);
-		return Token(s, TokenType::ID);
+			return Token(s, TokenType::KWD_INT, getPos());
+		if (s == "double")
+			return Token(s, TokenType::KWD_DOUBLE, getPos());
+		if (s == "float")
+			return Token(s, TokenType::KWD_FLOAT, getPos());
+		if (s == "bool")
+			return Token(s, TokenType::KWD_BOOL, getPos());
+		if (s == "true")
+			return Token(s, TokenType::BOOL, getPos());
+		if (s == "false")
+			return Token(s, TokenType::BOOL, getPos());
+		return Token(s, TokenType::ID, getPos());
 	}
 
 	else switch (ch) {
 
 	case '+':
-		++index;
-		return Token("+", TokenType::ADD);
+		advance();
+		return Token("+", TokenType::ADD, getPos());
 
 	case '-':
-		++index;
-		return Token("-", TokenType::SUB);
+		advance();
+		return Token("-", TokenType::SUB, getPos());
 
 	case '*':
-		++index;
-		return Token("*", TokenType::MUL);
+		advance();
+		return Token("*", TokenType::MUL, getPos());
 
 	case '/':
-		++index;
-		return Token("/", TokenType::DIV);
+		advance();
+		return Token("/", TokenType::DIV, getPos());
 
 	case '(':
-		++index;
-		return Token("(", TokenType::LPARENTH);
+		advance();
+		return Token("(", TokenType::LPARENTH, getPos());
 
 	case ')':
-		++index;
-		return Token(")", TokenType::RPARENTH);
+		advance();
+		return Token(")", TokenType::RPARENTH, getPos());
 
 	case '=':
-		++index;
-		return Token("=", TokenType::ASSIGN);
+		advance();
+		return Token("=", TokenType::ASSIGN, getPos());
 
 	case ';':
-		++index;
-		return Token(";", TokenType::SEMICOLON);
+		advance();
+		return Token(";", TokenType::SEMICOLON, getPos());
 
 	default:
 		throw std::runtime_error("Invalid token: '" + std::string(1, ch) + "'.");
