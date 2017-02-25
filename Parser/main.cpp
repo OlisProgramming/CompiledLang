@@ -1,12 +1,16 @@
 #include <iostream>
 #include <fstream>
+#include <rlutil.h>
 
 #include "interpreter.h"
+
+#define INTERPRETER_DEBUG 1
 
 int main(int argc, char* argv[]) {
 	
 	Interpreter interp;
-	
+	rlutil::setColor(rlutil::GREY);
+
 	try {
 		std::ifstream file("../programs/program.compiled");
 		std::string line;
@@ -17,9 +21,16 @@ int main(int argc, char* argv[]) {
 
 		unsigned int commandIndex = 0U;
 		while (commandIndex < lines.size()) {
-			std::cout << "Executing command " << commandIndex << " (" << lines[commandIndex] << ")";
+#if INTERPRETER_DEBUG
+			rlutil::setColor(rlutil::LIGHTMAGENTA);
+			std::cout << "Executing command " << commandIndex << " (" << lines[commandIndex] << ")" << std::endl;
+			rlutil::setColor(rlutil::WHITE);
+#endif
 			interp.exec(lines[commandIndex], &commandIndex);
-			std::cout << ". Next is " << commandIndex << ". Stack:" << std::endl << interp.getStackDump();
+#if INTERPRETER_DEBUG
+			rlutil::setColor(rlutil::GREY);
+			std::cout << "Next is " << commandIndex << ". Stack:" << std::endl << interp.getStackDump();
+#endif
 		}
 	}
 	catch (std::runtime_error& ex) {

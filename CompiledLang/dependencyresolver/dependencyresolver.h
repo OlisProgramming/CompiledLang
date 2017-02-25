@@ -3,4 +3,4 @@
 #include <unordered_map>
 #include "../parser/node.h"
 
-std::unordered_map<std::string, FunctionPointer> resolveDependencies();
+std::unordered_multimap<std::string, FunctionPointer> resolveDependencies();

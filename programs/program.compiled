@@ -1,5 +1,11 @@
-goto 3
-native println
+goto 9
+iprintln
+ireturn 0
+dprintln
+ireturn 0
+fprintln
+ireturn 0
+bprintln
 ireturn 0
 frame_alloc 5
 ildc 1
@@ -9,7 +15,7 @@ ildc 3
 iadd
 istore 0
 dldc 1.5
-dldc 2.5
+dldc 2.7
 dadd
 dldc 1.
 dadd
@@ -17,10 +23,20 @@ dstore 1
 fldc 10.
 fldc 5.5
 fsub
-fldc 2.5
+fldc 2.3
 fadd
 fstore 2
 bldc 1
 bstore 3
 bldc 0
 bstore 4
+iload 0
+goto 1
+iload 1
+goto 3
+iload 2
+goto 5
+iload 3
+goto 7
+iload 4
+goto 7

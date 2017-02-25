@@ -40,18 +40,40 @@ void Interpreter::exec(std::string command, unsigned int* commandIndex) {
 		frames.push_back(stack.size());
 		*commandIndex = arg1;
 	}
-	else if (code == "native") {
-		std::string arg1;
-		ss >> arg1;
-		if (arg1 == "iprintln") {  // TODO change println to [i/d/f/b]println in parser
-			StackItem val = stack[stack.size() - 2];  // Arg 0.
-			std::cout << "IPRINTLN: " << val.intval << std::endl;
-			StackItem gotoaddress = stack.back();
-			stack.pop_back();
-			stack.pop_back();
-			stack.push_back(gotoaddress);
-		}
+	
+	else if (code == "iprintln") {
+		StackItem val = stack[stack.size() - 2];  // Arg 0.
+		std::cout << "IPRINTLN: " << val.intval << std::endl;
+		StackItem gotoaddress = stack.back();
+		stack.pop_back();
+		stack.pop_back();
+		stack.push_back(gotoaddress);
 	}
+	else if (code == "dprintln") {
+		StackItem val = stack[stack.size() - 2];  // Arg 0.
+		std::cout << "DPRINTLN: " << val.doubleval << std::endl;
+		StackItem gotoaddress = stack.back();
+		stack.pop_back();
+		stack.pop_back();
+		stack.push_back(gotoaddress);
+	}
+	else if (code == "fprintln") {
+		StackItem val = stack[stack.size() - 2];  // Arg 0.
+		std::cout << "FPRINTLN: " << val.floatval << std::endl;
+		StackItem gotoaddress = stack.back();
+		stack.pop_back();
+		stack.pop_back();
+		stack.push_back(gotoaddress);
+	}
+	else if (code == "bprintln") {
+		StackItem val = stack[stack.size() - 2];  // Arg 0.
+		std::cout << "BPRINTLN: " << (val.boolval? "true" : "false") << std::endl;
+		StackItem gotoaddress = stack.back();
+		stack.pop_back();
+		stack.pop_back();
+		stack.push_back(gotoaddress);
+	}
+
 	else if (code == "ireturn") {
 		int arg1;
 		ss >> arg1;

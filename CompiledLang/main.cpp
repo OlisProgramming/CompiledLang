@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
 		auto tree = ps.parse();
 		tree->print();
 
-		std::cout << std::endl << std::endl << std::endl;
+		//std::cout << std::endl << std::endl << std::endl;
 
 		auto dependencies = resolveDependencies();
 

@@ -139,10 +139,11 @@ struct FunctionSignature {
 struct FunctionPointer {
 	FunctionSignature signature;
 	Node* program;
+	std::string nativeName;
 
 	FunctionPointer() {}
-	FunctionPointer(DataType returnType, std::vector<DataType> argTypes, Node* program) : signature(returnType, argTypes), program(program) {}
-	std::string str() { return signature.str() + ((program==nullptr)? " (function node not set)" : " (valid function)"); }
+	FunctionPointer(std::string nativeName, DataType returnType, std::vector<DataType> argTypes, Node* program) : nativeName(nativeName), signature(returnType, argTypes), program(program) {}
+	std::string str() { return signature.str() + ((program==nullptr)? " (no function node, named " : " (function node, named ") + ((nativeName == "")? "<no name>" : nativeName)  + ")"; }
 };
 
 class NodeFunctionCall : public Node {

@@ -1,6 +1,6 @@
 #include "typechecker.h"
 
-void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes, std::unordered_map<std::string, FunctionPointer>& dependencies) {
+void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes, std::unordered_multimap<std::string, FunctionPointer>& dependencies) {
 	if (node->dataType != DataType::UNKNOWN) return;
 
 	//std::cout << nodeTypeString(node->type) << std::endl;
@@ -55,10 +55,10 @@ void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes,
 
 	case NodeType::NAME:
 		if (static_cast<NodeName*>(node)->usage == NodeName::Usage::FUNCTION_CALL) {
-			if (dependencies.find(static_cast<NodeName*>(node)->name) == dependencies.end()) {
+			if (dependencies.count(static_cast<NodeName*>(node)->name) == 0) {
 				throw std::runtime_error("Function " + static_cast<NodeName*>(node)->name + " does not exist! Error at " + node->pos.str());
 			}
-			node->dataType = dependencies.find(static_cast<NodeName*>(node)->name)->second.signature.returnType;
+			//node->dataType = dependencies.find(static_cast<NodeName*>(node)->name)->second.signature.returnType;
 		}
 		else {
 			if (varTypes.find(static_cast<NodeName*>(node)->name) == varTypes.end()) {
@@ -68,13 +68,48 @@ void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes,
 		}
 		break;
 
-	case NodeType::FUNCTION_CALL:
+	case NodeType::FUNCTION_CALL: {
 		//NodeFunctionCall* functioncall = static_cast<NodeFunctionCall*>(node);
 		for (auto child : node->children)
 			checkTypes(child, varTypes, dependencies);
-		node->dataType = node->children[0]->dataType;
-		static_cast<NodeFunctionCall*>(node)->pointer = dependencies.find(static_cast<NodeName*>(node->children[0])->name)->second;
+		std::vector<DataType> argTypes;
+		for (unsigned int i = 1; i < node->children.size(); i++) {
+			argTypes.push_back(node->children[i]->dataType);
+		}
+
+		//std::cout << "Matching from: ";
+		//for (auto arg : argTypes)
+		//	std::cout << dataTypeString(arg);
+		//std::cout << std::endl;
+
+		bool successful = false;
+		auto its = dependencies.equal_range(static_cast<NodeName*>(node->children[0])->name);
+		for (auto pair = its.first; pair != its.second; ++pair) {
+
+			//std::cout << "Matching to: ";
+			//for (auto arg : pair->second.signature.argTypes)
+			//	std::cout << dataTypeString(arg);
+			//std::cout << std::endl;
+
+			if (pair->second.signature.argTypes == argTypes) {
+				node->dataType = pair->second.signature.returnType;
+
+				//std::cout << "Matched function: " << pair->first << std::endl;
+
+				static_cast<NodeFunctionCall*>(node)->pointer.signature = pair->second.signature;
+				static_cast<NodeFunctionCall*>(node)->pointer.nativeName = pair->second.nativeName;
+				node->children[0]->dataType = pair->second.signature.returnType;
+				successful = true;
+				break;
+			}
+		}
+		if (!successful) {
+			throw std::runtime_error("No instance of overloaded function " + static_cast<NodeName*>(node->children[0])->name + " matches argument types! Error at " + node->pos.str());
+		}
+
+		//static_cast<NodeFunctionCall*>(node)->pointer = dependencies.find(static_cast<NodeName*>(node->children[0])->name)->second;
 		break;
+	}
 
 	default:
 		throw std::runtime_error("Could not check the data type of node {" + node->str() + "}! Error at " + node->pos.str());

@@ -10,7 +10,7 @@ std::string Translator::translate(std::string symbolFname) {
 
 	// Add dependencies
 	for (auto dependencyPair : dependencies) {
-		dependencyLineNumbers.emplace(dependencyPair.first, currentLine);
+		dependencyLineNumbers.emplace(dependencyPair.second.nativeName, currentLine);
 		symbolFile << dependencyPair.first << " (" << dependencyPair.second.signature.str() << "): " << currentLine << std::endl;
 		translate(dependencyPair.second.program);
 		send("ireturn 0");
@@ -105,11 +105,11 @@ void Translator::translate(Node* node) {
 		break;
 
 	case NodeType::FUNCTION_CALL:
-		send("goto " + std::to_string(dependencyLineNumbers[static_cast<NodeName*>(node->children[0])->name]));
+		send("goto " + std::to_string(dependencyLineNumbers[static_cast<NodeFunctionCall*>(node)->pointer.nativeName]));
 		break;
 
 	case NodeType::NATIVE:
-		send("native " + static_cast<NodeNative*>(node)->code);
+		send(static_cast<NodeNative*>(node)->code);
 		break;
 
 	default:

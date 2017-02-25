@@ -1,6 +1,6 @@
 #include "obfuscator.h"
 
-void obfuscateNames(Node* program, std::string symbolFname, std::unordered_map<std::string, FunctionPointer>& dependencies) {
+void obfuscateNames(Node* program, std::string symbolFname, std::unordered_multimap<std::string, FunctionPointer>& dependencies) {
 	// In each scope, obfuscate names.
 	// Each name gets an obfuscated value of the index it appears in the list of local variables.
 	// For example, the first local variable declared will receive a value of 0,
@@ -34,7 +34,7 @@ void obfuscateNames(Node* program, std::string symbolFname, std::unordered_map<s
 	checkUnObfuscated(program, map, dependencies);
 }
 
-void checkUnObfuscated(Node* node, std::unordered_map<std::string, int>& map, std::unordered_map<std::string, FunctionPointer>& dependencies) {
+void checkUnObfuscated(Node* node, std::unordered_map<std::string, int>& map, std::unordered_multimap<std::string, FunctionPointer>& dependencies) {
 	for (Node* child : node->children) {
 		checkUnObfuscated(child, map, dependencies);
 		if (child->type == NodeType::NAME) {
@@ -43,7 +43,7 @@ void checkUnObfuscated(Node* node, std::unordered_map<std::string, int>& map, st
 				if (map.find(childName->name) != map.end()) {
 					childName->obfuscatedName = map.find(childName->name)->second;
 				}
-				else if (dependencies.find(childName->name) != dependencies.end()) {
+				else if (dependencies.count(childName->name) != 0) {
 					childName->obfuscatedName = -2;  // Obfuscated name for functions.
 				}
 				else {
