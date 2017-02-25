@@ -15,6 +15,7 @@ public:
 
 private:
 	Token token() { return token(index); }
+	Token peek(unsigned int off = 1U) { return token(index + off); }
 	Token token(unsigned int index) { return (index < tokens.size()) ? tokens[index] : Token("<NULL>", static_cast<TokenType>(0)); }
 
 	void eat(TokenType type) {
@@ -29,6 +30,8 @@ private:
 	Node* parseMulDiv();
 	Node* parseArithmeticExpression();
 	Node* parseName(NodeName::Usage usage);
+
+	Node* parseFunctionCall();
 	Node* parseAssign();
 	Node* parseDeclareAssign();
 

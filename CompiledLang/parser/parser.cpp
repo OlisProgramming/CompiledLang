@@ -77,6 +77,22 @@ Node* Parser::parseName(NodeName::Usage usage) {
 	return new NodeName(tk.contents, usage);
 }
 
+Node* Parser::parseFunctionCall() {
+	NodeFunctionCall* functioncall = new NodeFunctionCall;
+	Node* name = parseName(NodeName::Usage::FUNCTION_CALL);
+	functioncall->addChild(name);
+	eat(TokenType::LPARENTH);
+	while (true) {
+		Node* expr = parseArithmeticExpression();
+		functioncall->addChild(expr);
+		if (token().type != TokenType::COMMA)
+			break;
+	}
+	eat(TokenType::RPARENTH);
+	eat(TokenType::SEMICOLON);
+	return functioncall;
+}
+
 Node* Parser::parseAssign() {
 	Node* name = parseName(NodeName::Usage::NONE);
 	//static_cast<NodeName*>(name)->dataType = DataType::INT;
@@ -108,6 +124,9 @@ Node* Parser::parseStatement() {
 		return parseDeclareAssign();
 
 	case TokenType::ID:
+		if (peek().type == TokenType::LPARENTH)
+			return parseFunctionCall();
+		// else
 		return parseAssign();
 	}
 

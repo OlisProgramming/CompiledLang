@@ -110,6 +110,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="dependencyresolver\dependencyresolver.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="obfuscator\obfuscator.cpp" />
     <ClCompile Include="parser\parser.cpp" />
@@ -118,6 +119,7 @@
     <ClCompile Include="typechecker\typechecker.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dependencyresolver\dependencyresolver.h" />
     <ClInclude Include="obfuscator\obfuscator.h" />
     <ClInclude Include="parser\parser.h" />
     <ClInclude Include="parser\node.h" />

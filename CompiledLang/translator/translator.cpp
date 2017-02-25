@@ -1,5 +1,23 @@
 #include "translator.h"
 
+std::string Translator::translate() {
+	output = "";
+
+	send("");  // Create a blank line at start for initial goto statement
+
+	// Add dependencies
+	for (auto dependencyPair : dependencies) {
+		dependencyLineNumbers.emplace(dependencyPair.first, currentLine);
+		translate(dependencyPair.second.program);
+		send("ireturn 0");
+	}
+
+	output = "goto " + std::to_string(currentLine) + output;
+
+	translate(program);
+	return output;
+}
+
 void Translator::translate(Node* node) {
 
 	if (node->type == NodeType::PROGRAM) {
@@ -54,6 +72,14 @@ void Translator::translate(Node* node) {
 
 	case NodeType::PROGRAM:
 		// Children handled above
+		break;
+
+	case NodeType::FUNCTION_CALL:
+		send("goto " + std::to_string(dependencyLineNumbers[static_cast<NodeName*>(node->children[0])->name]));
+		break;
+
+	case NodeType::NATIVE:
+		send("native " + static_cast<NodeNative*>(node)->code);
 		break;
 
 	default:

@@ -1,6 +1,6 @@
 #include "typechecker.h"
 
-void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes) {
+void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes, std::unordered_map<std::string, FunctionPointer>& dependencies) {
 	if (node->dataType != DataType::UNKNOWN) return;
 
 	//std::cout << nodeTypeString(node->type) << std::endl;
@@ -10,11 +10,11 @@ void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes)
 	case NodeType::PROGRAM:
 		node->dataType = DataType::INT;  // Could change later
 		for (Node* child : node->children)
-			checkTypes(child, varTypes);
+			checkTypes(child, varTypes, dependencies);
 		break;
 
 	case NodeType::DECLARE_ASSIGN:
-		checkTypes(node->children[1], varTypes);
+		checkTypes(node->children[1], varTypes, dependencies);
 		if (node->children[0]->dataType != node->children[1]->dataType) {
 			throw std::runtime_error(
 				"Cannot assign value of type "
@@ -26,8 +26,8 @@ void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes)
 		break;
 
 	case NodeType::ASSIGN:
-		checkTypes(node->children[0], varTypes);
-		checkTypes(node->children[1], varTypes);
+		checkTypes(node->children[0], varTypes, dependencies);
+		checkTypes(node->children[1], varTypes, dependencies);
 		if (node->children[0]->dataType != node->children[1]->dataType) {
 			throw std::runtime_error(
 				"Cannot assign value of type "
@@ -41,8 +41,8 @@ void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes)
 	case NodeType::SUB:
 	case NodeType::MUL:
 	case NodeType::DIV:
-		checkTypes(node->children[0], varTypes);
-		checkTypes(node->children[1], varTypes);
+		checkTypes(node->children[0], varTypes, dependencies);
+		checkTypes(node->children[1], varTypes, dependencies);
 		if (node->children[0]->dataType != node->children[1]->dataType) {
 			throw std::runtime_error(
 				"Cannot apply operation " + nodeTypeString(node->type)
@@ -54,10 +54,26 @@ void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes)
 		break;
 
 	case NodeType::NAME:
-		if (varTypes.find(static_cast<NodeName*>(node)->name) == varTypes.end()) {
-			throw std::runtime_error("Variable " + static_cast<NodeName*>(node)->name + " does not exist yet!");
+		if (static_cast<NodeName*>(node)->usage == NodeName::Usage::FUNCTION_CALL) {
+			if (dependencies.find(static_cast<NodeName*>(node)->name) == dependencies.end()) {
+				throw std::runtime_error("Function " + static_cast<NodeName*>(node)->name + " does not exist!");
+			}
+			node->dataType = dependencies.find(static_cast<NodeName*>(node)->name)->second.signature.returnType;
 		}
-		static_cast<NodeName*>(node)->dataType = varTypes.find(static_cast<NodeName*>(node)->name)->second;
+		else {
+			if (varTypes.find(static_cast<NodeName*>(node)->name) == varTypes.end()) {
+				throw std::runtime_error("Variable " + static_cast<NodeName*>(node)->name + " does not exist yet!");
+			}
+			node->dataType = varTypes.find(static_cast<NodeName*>(node)->name)->second;
+		}
+		break;
+
+	case NodeType::FUNCTION_CALL:
+		//NodeFunctionCall* functioncall = static_cast<NodeFunctionCall*>(node);
+		for (auto child : node->children)
+			checkTypes(child, varTypes, dependencies);
+		node->dataType = node->children[0]->dataType;
+		static_cast<NodeFunctionCall*>(node)->pointer = dependencies.find(static_cast<NodeName*>(node->children[0])->name)->second;
 		break;
 
 	default:

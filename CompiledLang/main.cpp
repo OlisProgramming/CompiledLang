@@ -3,6 +3,7 @@
 
 #include "tokeniser\tokeniser.h"
 #include "parser\parser.h"
+#include "dependencyresolver\dependencyresolver.h"
 #include "typechecker\typechecker.h"
 #include "obfuscator\obfuscator.h"
 #include "translator\translator.h"
@@ -33,17 +34,21 @@ int main(int argc, char* argv[]) {
 
 		std::cout << std::endl << std::endl << std::endl;
 
-		obfuscateNames(tree, "../programs/program.symbol");
+		auto dependencies = resolveDependencies();
+
+		std::cout << std::endl << std::endl << std::endl;
+
+		checkTypes(tree, std::unordered_map<std::string, DataType>(), dependencies);
 		tree->print();
 
 		std::cout << std::endl << std::endl << std::endl;
 
-		checkTypes(tree, std::unordered_map<std::string, DataType>());
+		obfuscateNames(tree, "../programs/program.symbol", dependencies);
 		tree->print();
 
 		std::cout << std::endl << std::endl << std::endl;
 		
-		Translator tr(tree);
+		Translator tr(tree, dependencies);
 		std::string out = tr.translate();
 		std::ofstream outfile("../programs/program.compiled");
 		std::cout << out;

@@ -1,3 +1,6 @@
+goto 3
+native println
+ireturn 0
 frame_alloc 3
 ldc 3
 ldc 2
@@ -19,3 +22,5 @@ iadd
 istore 2
 ldc 128
 istore 2
+ldc 9999
+goto 1

@@ -9,7 +9,7 @@ enum class TokenType {
 	ID,
 	INT,
 	ASSIGN,
-	SEMICOLON,
+	SEMICOLON, COMMA,
 	FILE_END
 };
 
@@ -26,6 +26,7 @@ inline std::string tokenTypeString(TokenType type) {
 	case TokenType::INT: return "INT";
 	case TokenType::ASSIGN: return "ASSIGN";
 	case TokenType::SEMICOLON: return "SEMICOLON";
+	case TokenType::COMMA: return "COMMA";
 	case TokenType::FILE_END: return "FILE_END";
 	}
 	return "UNRECOGNISED TOKEN";

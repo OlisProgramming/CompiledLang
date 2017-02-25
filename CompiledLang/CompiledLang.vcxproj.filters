@@ -33,6 +33,9 @@
     <ClCompile Include="obfuscator\obfuscator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dependencyresolver\dependencyresolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tokeniser\tokeniser.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="obfuscator\obfuscator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencyresolver\dependencyresolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

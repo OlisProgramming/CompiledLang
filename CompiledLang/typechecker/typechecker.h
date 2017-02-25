@@ -3,4 +3,4 @@
 #include "../parser/node.h"
 #include <unordered_map>
 
-void checkTypes(Node* program, std::unordered_map<std::string, DataType>& varTypes);
+void checkTypes(Node* program, std::unordered_map<std::string, DataType>& varTypes, std::unordered_map<std::string, FunctionPointer>& dependencies);
