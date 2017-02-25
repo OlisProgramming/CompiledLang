@@ -20,7 +20,7 @@ void Interpreter::exec(std::string command, unsigned int* commandIndex) {
 		unsigned int arg1;
 		ss >> arg1;
 		stack.push_back(*commandIndex);
-		frames.push(stack.size());
+		frames.push_back(stack.size());
 		*commandIndex = arg1;
 	}
 	else if (code == "native") {
@@ -40,7 +40,7 @@ void Interpreter::exec(std::string command, unsigned int* commandIndex) {
 		ss >> arg1;
 		while (stack.size() > frames.back())
 			stack.pop_back();
-		frames.pop();
+		frames.pop_back();
 		unsigned int gotoaddress = stack.back();
 		*commandIndex = gotoaddress;
 		stack.pop_back();
@@ -49,7 +49,7 @@ void Interpreter::exec(std::string command, unsigned int* commandIndex) {
 	else if (code == "frame_alloc") {
 		int arg1;
 		ss >> arg1;
-		frames.push(stack.size());
+		//frames.push(stack.size());
 		for (int i = 0; i < arg1; ++i)
 			stack.push_back(0);
 	}

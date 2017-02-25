@@ -4,3 +4,5 @@ int variablec = variablea + variableb;
 variablec = 128;
 
 println(9999);
+println(118 * 2);
+println(variablea);

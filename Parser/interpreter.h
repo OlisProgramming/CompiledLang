@@ -1,6 +1,5 @@
 #pragma once
 
-#include <queue>
 #include <deque>
 #include <string>
 #include <sstream>
@@ -10,7 +9,7 @@
 class Interpreter {
 
 	std::deque<int> stack;
-	std::queue<unsigned int> frames;
+	std::deque<unsigned int> frames;
 
 public:
 	Interpreter();
