@@ -7,8 +7,11 @@ fprintln
 return
 bprintln
 return
-frame_alloc 1
-bldc 0
-bstore 0
+frame_alloc 0
+ildc 2
+ildc 2
+ile
+goto 7
 bldc 1
-bstore 0
+lognot
+goto 7

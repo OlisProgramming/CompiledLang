@@ -9,6 +9,7 @@ enum class NodeType {
 	NUMBER,
 	NAME,
 	ADD, SUB, MUL, DIV,
+	GT, LT, GE, LE, EQ, NE, LOGIC_NOT,
 	ASSIGN, DECLARE_ASSIGN,
 	FUNCTION_CALL,
 	PROGRAM, NATIVE,
@@ -23,18 +24,25 @@ enum class DataType {
 
 inline std::string nodeTypeString(NodeType& type) {
 	switch (type) {
-	case NodeType::NUMBER: return "NUMBER";
-	case NodeType::NAME: return "NAME";
-	case NodeType::ADD: return "ADD";
-	case NodeType::SUB: return "SUB";
-	case NodeType::MUL: return "MUL";
-	case NodeType::DIV: return "DIV";
-	case NodeType::ASSIGN: return "ASSIGN";
-	case NodeType::DECLARE_ASSIGN: return "DECLARE_ASSIGN";
-	case NodeType::FUNCTION_CALL: return "FUNCTION_CALL";
-	case NodeType::PROGRAM: return "PROGRAM";
-	case NodeType::NATIVE: return "NATIVE";
-	case NodeType::CAST: return "CAST";
+	case NodeType::NUMBER:			return "NUMBER";
+	case NodeType::NAME:			return "NAME";
+	case NodeType::ADD:				return "ADD";
+	case NodeType::SUB:				return "SUB";
+	case NodeType::MUL:				return "MUL";
+	case NodeType::DIV:				return "DIV";
+	case NodeType::GT:				return "GT";
+	case NodeType::LT:				return "LT";
+	case NodeType::GE:				return "GE";
+	case NodeType::LE:				return "LE";
+	case NodeType::EQ:				return "EQ";
+	case NodeType::NE:				return "NE";
+	case NodeType::LOGIC_NOT:		return "LOGIC_NOT";
+	case NodeType::ASSIGN:			return "ASSIGN";
+	case NodeType::DECLARE_ASSIGN:	return "DECLARE_ASSIGN";
+	case NodeType::FUNCTION_CALL:	return "FUNCTION_CALL";
+	case NodeType::PROGRAM:			return "PROGRAM";
+	case NodeType::NATIVE:			return "NATIVE";
+	case NodeType::CAST:			return "CAST";
 	}
 	return "UNRECOGNISED NODE";
 }

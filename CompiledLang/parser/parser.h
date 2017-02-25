@@ -26,8 +26,12 @@ private:
 
 	Node* parseNumber();
 	Node* parseArithmeticUnit();
-	Node* parseAddSub();
+	Node* parseUnaryOperators1();
+	Node* parseUnaryOperators2();
 	Node* parseMulDiv();
+	Node* parseAddSub();
+	Node* parseComparison();
+	Node* parseEquality();
 	Node* parseArithmeticExpression();
 	Node* parseName(NodeName::Usage usage);
 

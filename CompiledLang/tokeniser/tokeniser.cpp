@@ -125,11 +125,39 @@ Token Tokeniser::getNextToken() {
 
 	case '=':
 		advance();
+		if (chr() == '=') {
+			advance();
+			return Token("==", TokenType::EQ, getPos());
+		}
 		return Token("=", TokenType::ASSIGN, getPos());
 
 	case ';':
 		advance();
 		return Token(";", TokenType::SEMICOLON, getPos());
+
+	case '>':
+		advance();
+		if (chr() == '=') {
+			advance();
+			return Token(">=", TokenType::GE, getPos());
+		}
+		return Token(">", TokenType::GT, getPos());
+
+	case '<':
+		advance();
+		if (chr() == '=') {
+			advance();
+			return Token("<=", TokenType::LE, getPos());
+		}
+		return Token("<", TokenType::LT, getPos());
+
+	case '!':
+		advance();
+		if (chr() == '=') {
+			advance();
+			return Token("!=", TokenType::NE, getPos());
+		}
+		return Token("!", TokenType::LOGIC_NOT, getPos());
 
 	default:
 		throw std::runtime_error("Invalid token: '" + std::string(1, ch) + "'.");

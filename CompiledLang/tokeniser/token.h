@@ -9,6 +9,7 @@ enum class TokenType {
 	ID, CAST,
 	KWD_INT, KWD_DOUBLE, KWD_FLOAT, KWD_BOOL,
 	ASSIGN,
+	GT, LT, GE, LE, EQ, NE, LOGIC_NOT,
 	SEMICOLON, COMMA,
 	FILE_END
 };
@@ -32,6 +33,13 @@ inline std::string tokenTypeString(TokenType type) {
 	case TokenType::KWD_FLOAT:	return "KWD_FLOAT";
 	case TokenType::KWD_BOOL:	return "KWD_BOOL";
 	case TokenType::ASSIGN:		return "ASSIGN";
+	case TokenType::GT:			return "GT";
+	case TokenType::LT:			return "LT";
+	case TokenType::GE:			return "GE";
+	case TokenType::LE:			return "LE";
+	case TokenType::EQ:			return "EQ";
+	case TokenType::NE:			return "NE";
+	case TokenType::LOGIC_NOT:	return "LOGIC_NOT";
 	case TokenType::SEMICOLON:	return "SEMICOLON";
 	case TokenType::COMMA:		return "COMMA";
 	case TokenType::FILE_END:	return "FILE_END";

@@ -44,6 +44,13 @@ Node* Parser::parseArithmeticUnit() {
 	else
 		node = parseNumber();
 
+	return node;
+}
+
+Node* Parser::parseUnaryOperators1() {
+	Token& tk = token();
+	Node* node = parseArithmeticUnit();
+
 	while (token().type == TokenType::CAST) {
 		eat(TokenType::CAST);
 		NodeCast* node2 = new NodeCast(tk.pos);
@@ -69,9 +76,23 @@ Node* Parser::parseArithmeticUnit() {
 	return node;
 }
 
+Node* Parser::parseUnaryOperators2() {
+	Token& tk = token();
+	Node* node;
+	if (tk.type == TokenType::LOGIC_NOT) {
+		eat(TokenType::LOGIC_NOT);
+		node = new Node(NodeType::LOGIC_NOT, tk.pos);
+		node->addChild(parseUnaryOperators2());
+	}
+	else {
+		node = parseUnaryOperators1();
+	}
+	return node;
+}
+
 Node* Parser::parseMulDiv() {
 	Token& tk = token();
-	Node* node = parseArithmeticUnit();
+	Node* node = parseUnaryOperators2();
 	while (token().type == TokenType::MUL || token().type == TokenType::DIV) {
 		Node* newNode;
 		if (token().type == TokenType::MUL) {
@@ -83,7 +104,7 @@ Node* Parser::parseMulDiv() {
 			eat(TokenType::DIV);
 		}
 		newNode->addChild(node);
-		newNode->addChild(parseArithmeticUnit());
+		newNode->addChild(parseUnaryOperators2());
 		node = newNode;
 	}
 	return node;
@@ -109,8 +130,57 @@ Node* Parser::parseAddSub() {
 	return node;
 }
 
+Node* Parser::parseComparison() {
+	Token& tk = token();
+	Node* node = parseAddSub();
+	while (token().type == TokenType::GT || token().type == TokenType::LT
+		|| token().type == TokenType::GE || token().type == TokenType::LE) {
+		Node* newNode;
+		if (token().type == TokenType::GT) {
+			newNode = new Node(NodeType::GT, tk.pos);
+			eat(TokenType::GT);
+		}
+		else if (token().type == TokenType::LT) {
+			newNode = new Node(NodeType::LT, tk.pos);
+			eat(TokenType::LT);
+		}
+		else if (token().type == TokenType::GE) {
+			newNode = new Node(NodeType::GE, tk.pos);
+			eat(TokenType::GE);
+		}
+		else {
+			newNode = new Node(NodeType::LE, tk.pos);
+			eat(TokenType::LE);
+		}
+		newNode->addChild(node);
+		newNode->addChild(parseAddSub());
+		node = newNode;
+	}
+	return node;
+}
+
+Node* Parser::parseEquality() {
+	Token& tk = token();
+	Node* node = parseComparison();
+	while (token().type == TokenType::EQ || token().type == TokenType::NE) {
+		Node* newNode;
+		if (token().type == TokenType::EQ) {
+			newNode = new Node(NodeType::EQ, tk.pos);
+			eat(TokenType::EQ);
+		}
+		else {
+			newNode = new Node(NodeType::NE, tk.pos);
+			eat(TokenType::NE);
+		}
+		newNode->addChild(node);
+		newNode->addChild(parseComparison());
+		node = newNode;
+	}
+	return node;
+}
+
 Node* Parser::parseArithmeticExpression() {
-	return parseAddSub();
+	return parseEquality();
 }
 
 Node* Parser::parseName(NodeName::Usage usage) {

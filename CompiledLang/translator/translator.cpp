@@ -99,6 +99,76 @@ void Translator::translate(Node* node) {
 			throw std::runtime_error("Cannot interpret DIV node of type " + dataTypeString(node->dataType) + "!");
 		return;
 
+	case NodeType::GT:
+		if (node->children[0]->dataType == DataType::INTEGER)
+			send("igt");
+		else if (node->children[0]->dataType == DataType::DOUBLE)
+			send("dgt");
+		else if (node->children[0]->dataType == DataType::FLOAT)
+			send("fgt");
+		else
+			throw std::runtime_error("Cannot interpret GT node of type " + dataTypeString(node->children[0]->dataType) + "!");
+		break;
+
+	case NodeType::LT:
+		if (node->children[0]->dataType == DataType::INTEGER)
+			send("ilt");
+		else if (node->children[0]->dataType == DataType::DOUBLE)
+			send("dlt");
+		else if (node->children[0]->dataType == DataType::FLOAT)
+			send("flt");
+		else
+			throw std::runtime_error("Cannot interpret LT node of type " + dataTypeString(node->children[0]->dataType) + "!");
+		break;
+
+	case NodeType::GE:
+		if (node->children[0]->dataType == DataType::INTEGER)
+			send("ige");
+		else if (node->children[0]->dataType == DataType::DOUBLE)
+			send("dge");
+		else if (node->children[0]->dataType == DataType::FLOAT)
+			send("fge");
+		else
+			throw std::runtime_error("Cannot interpret GE node of type " + dataTypeString(node->children[0]->dataType) + "!");
+		break;
+
+	case NodeType::LE:
+		if (node->children[0]->dataType == DataType::INTEGER)
+			send("ile");
+		else if (node->children[0]->dataType == DataType::DOUBLE)
+			send("dle");
+		else if (node->children[0]->dataType == DataType::FLOAT)
+			send("fle");
+		else
+			throw std::runtime_error("Cannot interpret LE node of type " + dataTypeString(node->children[0]->dataType) + "!");
+		break;
+
+	case NodeType::EQ:
+		if (node->children[0]->dataType == DataType::INTEGER)
+			send("ieq");
+		else if (node->children[0]->dataType == DataType::DOUBLE)
+			send("deq");
+		else if (node->children[0]->dataType == DataType::FLOAT)
+			send("feq");
+		else
+			throw std::runtime_error("Cannot interpret EQ node of type " + dataTypeString(node->children[0]->dataType) + "!");
+		break;
+
+	case NodeType::NE:
+		if (node->dataType == DataType::INTEGER)
+			send("ine");
+		else if (node->dataType == DataType::DOUBLE)
+			send("dne");
+		else if (node->dataType == DataType::FLOAT)
+			send("fne");
+		else
+			throw std::runtime_error("Cannot interpret NE node of type " + dataTypeString(node->children[0]->dataType) + "!");
+		break;
+
+	case NodeType::LOGIC_NOT:
+		send("lognot");
+		break;
+
 	case NodeType::NAME:
 		if (static_cast<NodeName*>(node)->usage == NodeName::Usage::LOAD_TO_STACK) {
 			send("iload " + std::to_string(static_cast<NodeName*>(node)->obfuscatedName));

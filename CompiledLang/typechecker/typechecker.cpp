@@ -37,6 +37,17 @@ void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes,
 		node->dataType = node->children[0]->dataType;
 		break;
 
+	case NodeType::LOGIC_NOT:
+		checkTypes(node->children[0], varTypes, dependencies);
+		if (node->children[0]->dataType != DataType::BOOL) {
+			throw std::runtime_error(
+				"Cannot apply operation " + nodeTypeString(node->type)
+				+ " to child of type "
+				+ dataTypeString(node->children[0]->dataType) + "! Error at " + node->pos.str());
+		}
+		node->dataType = node->children[0]->dataType;
+		break;
+
 	case NodeType::ADD:
 	case NodeType::SUB:
 	case NodeType::MUL:
@@ -51,6 +62,24 @@ void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes,
 				+ dataTypeString(node->children[1]->dataType) + ")! Error at " + node->pos.str());
 		}
 		node->dataType = node->children[0]->dataType;
+		break;
+
+	case NodeType::GT:
+	case NodeType::LT:
+	case NodeType::GE:
+	case NodeType::LE:
+	case NodeType::EQ:
+	case NodeType::NE:
+		checkTypes(node->children[0], varTypes, dependencies);
+		checkTypes(node->children[1], varTypes, dependencies);
+		if (node->children[0]->dataType != node->children[1]->dataType) {
+			throw std::runtime_error(
+				"Cannot apply operation " + nodeTypeString(node->type)
+				+ " to children of different types ("
+				+ dataTypeString(node->children[0]->dataType) + " and "
+				+ dataTypeString(node->children[1]->dataType) + ")! Error at " + node->pos.str());
+		}
+		node->dataType = DataType::BOOL;
 		break;
 
 	case NodeType::NAME:

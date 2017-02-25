@@ -177,6 +177,48 @@ void Interpreter::exec(std::string command, unsigned int* commandIndex) {
 		stack.pop_back();
 		stack.push_back(a / b);
 	}
+	else if (code == "igt") {
+		int b = stack.back().intval;
+		stack.pop_back();
+		int a = stack.back().intval;
+		stack.pop_back();
+		stack.push_back(a > b);
+	}
+	else if (code == "ilt") {
+		int b = stack.back().intval;
+		stack.pop_back();
+		int a = stack.back().intval;
+		stack.pop_back();
+		stack.push_back(a < b);
+	}
+	else if (code == "ige") {
+		int b = stack.back().intval;
+		stack.pop_back();
+		int a = stack.back().intval;
+		stack.pop_back();
+		stack.push_back(a >= b);
+	}
+	else if (code == "ile") {
+		int b = stack.back().intval;
+		stack.pop_back();
+		int a = stack.back().intval;
+		stack.pop_back();
+		stack.push_back(a <= b);
+	}
+	else if (code == "ieq") {
+		int b = stack.back().intval;
+		stack.pop_back();
+		int a = stack.back().intval;
+		stack.pop_back();
+		stack.push_back(a == b);
+	}
+	else if (code == "ine") {
+		int b = stack.back().intval;
+		stack.pop_back();
+		int a = stack.back().intval;
+		stack.pop_back();
+		stack.push_back(a != b);
+	}
 
 	else if (code == "dadd") {
 		double b = stack.back().doubleval;
@@ -206,6 +248,48 @@ void Interpreter::exec(std::string command, unsigned int* commandIndex) {
 		stack.pop_back();
 		stack.push_back(a / b);
 	}
+	else if (code == "dgt") {
+		double b = stack.back().doubleval;
+		stack.pop_back();
+		double a = stack.back().doubleval;
+		stack.pop_back();
+		stack.push_back(a > b);
+	}
+	else if (code == "dlt") {
+		double b = stack.back().doubleval;
+		stack.pop_back();
+		double a = stack.back().doubleval;
+		stack.pop_back();
+		stack.push_back(a < b);
+	}
+	else if (code == "dge") {
+		double b = stack.back().doubleval;
+		stack.pop_back();
+		double a = stack.back().doubleval;
+		stack.pop_back();
+		stack.push_back(a >= b);
+	}
+	else if (code == "dle") {
+		double b = stack.back().doubleval;
+		stack.pop_back();
+		double a = stack.back().doubleval;
+		stack.pop_back();
+		stack.push_back(a <= b);
+	}
+	else if (code == "deq") {
+		double b = stack.back().doubleval;
+		stack.pop_back();
+		double a = stack.back().doubleval;
+		stack.pop_back();
+		stack.push_back(a == b);
+	}
+	else if (code == "dne") {
+		double b = stack.back().doubleval;
+		stack.pop_back();
+		double a = stack.back().doubleval;
+		stack.pop_back();
+		stack.push_back(a != b);
+	}
 
 	else if (code == "fadd") {
 		float b = stack.back().floatval;
@@ -234,6 +318,52 @@ void Interpreter::exec(std::string command, unsigned int* commandIndex) {
 		float a = stack.back().floatval;
 		stack.pop_back();
 		stack.push_back(a / b);
+	}
+	else if (code == "fgt") {
+		float b = stack.back().floatval;
+		stack.pop_back();
+		float a = stack.back().floatval;
+		stack.pop_back();
+		stack.push_back(a > b);
+	}
+	else if (code == "flt") {
+		float b = stack.back().floatval;
+		stack.pop_back();
+		float a = stack.back().floatval;
+		stack.pop_back();
+		stack.push_back(a < b);
+	}
+	else if (code == "fge") {
+		float b = stack.back().floatval;
+		stack.pop_back();
+		float a = stack.back().floatval;
+		stack.pop_back();
+		stack.push_back(a >= b);
+	}
+	else if (code == "fle") {
+		float b = stack.back().floatval;
+		stack.pop_back();
+		float a = stack.back().floatval;
+		stack.pop_back();
+		stack.push_back(a <= b);
+	}
+	else if (code == "feq") {
+		float b = stack.back().floatval;
+		stack.pop_back();
+		float a = stack.back().floatval;
+		stack.pop_back();
+		stack.push_back(a == b);
+	}
+	else if (code == "fne") {
+		float b = stack.back().floatval;
+		stack.pop_back();
+		float a = stack.back().floatval;
+		stack.pop_back();
+		stack.push_back(a != b);
+	}
+
+	else if (code == "lognot") {
+		stack.back().boolval = !(stack.back().boolval);
 	}
 
 	else if (code == "istore" || code == "dstore" || code == "fstore" || code == "bstore") {  // Store a value in localVars.
