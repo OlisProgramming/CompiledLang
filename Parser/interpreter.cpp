@@ -3,16 +3,48 @@
 Interpreter::Interpreter() {
 }
 
-void Interpreter::exec(std::string command) {
+void Interpreter::exec(std::string command, unsigned int* commandIndex) {
 
 	std::stringstream ss(command);
 	std::string code;
 	ss >> code;
 
+	++*commandIndex;
+
 	if (code == "ldc") {  // Load integer constant onto stack
 		std::string arg1;
 		ss >> arg1;
 		stack.push_back(std::atoi(arg1.c_str()));
+	}
+	else if (code == "goto") {
+		unsigned int arg1;
+		ss >> arg1;
+		stack.push_back(*commandIndex);
+		frames.push(stack.size());
+		*commandIndex = arg1;
+	}
+	else if (code == "native") {
+		std::string arg1;
+		ss >> arg1;
+		if (arg1 == "println") {
+			int val = stack[stack.size() - 2];  // Arg 0.
+			std::cout << "PRINTLN: " << val << std::endl;
+			int gotoaddress = stack.back();
+			stack.pop_back();
+			stack.pop_back();
+			stack.push_back(gotoaddress);
+		}
+	}
+	else if (code == "ireturn") {
+		int arg1;
+		ss >> arg1;
+		while (stack.size() > frames.back())
+			stack.pop_back();
+		frames.pop();
+		unsigned int gotoaddress = stack.back();
+		*commandIndex = gotoaddress;
+		stack.pop_back();
+		stack.push_back(arg1);
 	}
 	else if (code == "frame_alloc") {
 		int arg1;
