@@ -1,3 +1,8 @@
-0: variablea
-1: variableb
-2: variablec
+VARIABLES (obfuscated name: name)
+0 (int): variablea
+1 (int): variableb
+2 (int): variablec
+
+FUNCTIONS (name: line)
+println (int, return int): 1
+main program: 3

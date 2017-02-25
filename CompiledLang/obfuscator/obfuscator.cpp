@@ -7,6 +7,7 @@ void obfuscateNames(Node* program, std::string symbolFname, std::unordered_map<s
 	// and the second an obfuscated name of 1.
 
 	std::ofstream symbolFile(symbolFname);
+	symbolFile << "VARIABLES (obfuscated name: name)" << std::endl;
 	std::unordered_map<std::string, int> map;
 
 	int index = 0;
@@ -15,7 +16,7 @@ void obfuscateNames(Node* program, std::string symbolFname, std::unordered_map<s
 			static_cast<NodeName*>(node->children[0])->obfuscatedName = index;  // Name
 			map.emplace(static_cast<NodeName*>(node->children[0])->name, index);
 			//std::cout << index << ": " << static_cast<NodeName*>(node->children[0])->name << std::endl;
-			symbolFile << index++ << ": " << static_cast<NodeName*>(node->children[0])->name << std::endl;
+			symbolFile << index++ << " (" << dataTypeString(node->children[0]->dataType) << "): " << static_cast<NodeName*>(node->children[0])->name << std::endl;
 		}
 	}
 

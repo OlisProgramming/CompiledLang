@@ -1,18 +1,23 @@
 #include "translator.h"
 
-std::string Translator::translate() {
+std::string Translator::translate(std::string symbolFname) {
 	output = "";
+
+	std::ofstream symbolFile(symbolFname, std::ios_base::app);
+	symbolFile << std::endl << "FUNCTIONS (name: line)" << std::endl;
 
 	send("");  // Create a blank line at start for initial goto statement
 
 	// Add dependencies
 	for (auto dependencyPair : dependencies) {
 		dependencyLineNumbers.emplace(dependencyPair.first, currentLine);
+		symbolFile << dependencyPair.first << " (" << dependencyPair.second.signature.str() << "): " << currentLine << std::endl;
 		translate(dependencyPair.second.program);
 		send("ireturn 0");
 	}
 
 	output = "goto " + std::to_string(currentLine) + output;
+	symbolFile << "main program: " << currentLine << std::endl;
 
 	translate(program);
 	return output;

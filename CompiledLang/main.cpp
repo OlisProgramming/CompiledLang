@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
 		std::cout << std::endl << std::endl << std::endl;
 		
 		Translator tr(tree, dependencies);
-		std::string out = tr.translate();
+		std::string out = tr.translate("../programs/program.symbol");
 		std::ofstream outfile("../programs/program.compiled");
 		std::cout << out;
 		outfile << out;

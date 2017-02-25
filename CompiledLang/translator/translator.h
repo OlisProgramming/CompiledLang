@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <fstream>
 #include "../parser/node.h"
 
 class Translator {
@@ -14,7 +15,7 @@ private:
 
 public:
 	Translator(Node* program, std::unordered_map<std::string, FunctionPointer>& dependencies) : program(program), dependencies(dependencies) {}
-	std::string translate();
+	std::string translate(std::string symbolFname);
 
 private:
 	void send(std::string str) { output += str + "\n"; ++currentLine; }
