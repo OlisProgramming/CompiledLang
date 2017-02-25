@@ -7,42 +7,8 @@ fprintln
 return
 bprintln
 return
-frame_alloc 5
-ildc 1
-dldc 2.5
-dldc 1.5
-dadd
-d2i
-iadd
-ildc 3
-iadd
-istore 0
-dldc 1.5
-dldc 2.7
-dadd
-fldc 4.14
-fldc 1
-fsub
-f2d
-dadd
-dstore 1
-fldc 10.
-fldc 5.5
-fsub
-fldc 2.3
-fadd
-fstore 2
-bldc 1
-bstore 3
+frame_alloc 1
 bldc 0
-bstore 4
-iload 0
-goto 1
-iload 1
-goto 3
-iload 2
-goto 5
-iload 3
-goto 7
-iload 4
-goto 7
+bstore 0
+bldc 1
+bstore 0
