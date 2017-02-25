@@ -9,3 +9,4 @@ println(varb);
 println(varc);
 println(vard);
 println(vare);
+println(gendouble() / 2.);

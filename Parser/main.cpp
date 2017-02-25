@@ -4,7 +4,7 @@
 
 #include "interpreter.h"
 
-#define INTERPRETER_DEBUG 1
+#define INTERPRETER_DEBUG 0
 
 int main(int argc, char* argv[]) {
 	

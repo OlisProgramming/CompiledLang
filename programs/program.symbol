@@ -6,8 +6,9 @@ VARIABLES (obfuscated name: name)
 4 (bool): vare
 
 FUNCTIONS (name: line)
-println (int, return int): 1
-println (double, return int): 3
-println (float, return int): 5
-println (bool, return int): 7
-main program: 9
+println (int, return void): 1
+println (double, return void): 3
+println (float, return void): 5
+println (bool, return void): 7
+gendouble (return double): 9
+main program: 11

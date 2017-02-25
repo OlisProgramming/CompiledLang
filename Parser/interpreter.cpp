@@ -43,7 +43,7 @@ void Interpreter::exec(std::string command, unsigned int* commandIndex) {
 	
 	else if (code == "iprintln") {
 		StackItem val = stack[stack.size() - 2];  // Arg 0.
-		std::cout << "IPRINTLN: " << val.intval << std::endl;
+		std::cout << val.intval << std::endl;
 		StackItem gotoaddress = stack.back();
 		stack.pop_back();
 		stack.pop_back();
@@ -51,7 +51,7 @@ void Interpreter::exec(std::string command, unsigned int* commandIndex) {
 	}
 	else if (code == "dprintln") {
 		StackItem val = stack[stack.size() - 2];  // Arg 0.
-		std::cout << "DPRINTLN: " << val.doubleval << std::endl;
+		std::cout << val.doubleval << std::endl;
 		StackItem gotoaddress = stack.back();
 		stack.pop_back();
 		stack.pop_back();
@@ -59,7 +59,7 @@ void Interpreter::exec(std::string command, unsigned int* commandIndex) {
 	}
 	else if (code == "fprintln") {
 		StackItem val = stack[stack.size() - 2];  // Arg 0.
-		std::cout << "FPRINTLN: " << val.floatval << std::endl;
+		std::cout << val.floatval << std::endl;
 		StackItem gotoaddress = stack.back();
 		stack.pop_back();
 		stack.pop_back();
@@ -67,14 +67,22 @@ void Interpreter::exec(std::string command, unsigned int* commandIndex) {
 	}
 	else if (code == "bprintln") {
 		StackItem val = stack[stack.size() - 2];  // Arg 0.
-		std::cout << "BPRINTLN: " << (val.boolval? "true" : "false") << std::endl;
+		std::cout << (val.boolval? "true" : "false") << std::endl;
 		StackItem gotoaddress = stack.back();
 		stack.pop_back();
 		stack.pop_back();
 		stack.push_back(gotoaddress);
 	}
 
-	else if (code == "ireturn") {
+	else if (code == "return") {  // return nothing to stack
+		while (stack.size() > frames.back())
+			stack.pop_back();
+		frames.pop_back();
+		StackItem gotoaddress = stack.back();
+		*commandIndex = gotoaddress.intval;
+		stack.pop_back();
+	}
+	else if (code == "ireturn") {  // Int return
 		int arg1;
 		ss >> arg1;
 		while (stack.size() > frames.back())
@@ -85,6 +93,17 @@ void Interpreter::exec(std::string command, unsigned int* commandIndex) {
 		stack.pop_back();
 		stack.push_back(arg1);
 	}
+	else if (code == "sreturn") {  // Stack return
+		StackItem returnValue = stack.back();
+		while (stack.size() > frames.back())
+			stack.pop_back();
+		frames.pop_back();
+		StackItem gotoaddress = stack.back();
+		*commandIndex = gotoaddress.intval;
+		stack.pop_back();
+		stack.push_back(returnValue);
+	}
+
 	else if (code == "frame_alloc") {
 		int arg1;
 		ss >> arg1;

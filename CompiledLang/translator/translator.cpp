@@ -13,7 +13,10 @@ std::string Translator::translate(std::string symbolFname) {
 		dependencyLineNumbers.emplace(dependencyPair.second.nativeName, currentLine);
 		symbolFile << dependencyPair.first << " (" << dependencyPair.second.signature.str() << "): " << currentLine << std::endl;
 		translate(dependencyPair.second.program);
-		send("ireturn 0");
+		if (dependencyPair.second.signature.returnType == DataType::VOID)
+			send("return");
+		else
+			send("sreturn");
 	}
 
 	output = "goto " + std::to_string(currentLine) + output;

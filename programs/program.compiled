@@ -1,12 +1,14 @@
-goto 9
+goto 11
 iprintln
-ireturn 0
+return
 dprintln
-ireturn 0
+return
 fprintln
-ireturn 0
+return
 bprintln
-ireturn 0
+return
+dldc 3.14159265
+sreturn
 frame_alloc 5
 ildc 1
 ildc 2
@@ -40,3 +42,7 @@ iload 3
 goto 7
 iload 4
 goto 7
+goto 9
+dldc 2.
+ddiv
+goto 3

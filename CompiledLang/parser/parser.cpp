@@ -36,7 +36,10 @@ Node* Parser::parseArithmeticUnit() {
 		eat(TokenType::RPARENTH);
 	}
 	else if (tk.type == TokenType::ID) {
-		node = parseName(NodeName::Usage::LOAD_TO_STACK);
+		if (peek().type == TokenType::LPARENTH)
+			node = parseFunctionCall();
+		else
+			node = parseName(NodeName::Usage::LOAD_TO_STACK);
 	}
 	else
 		node = parseNumber();
@@ -99,14 +102,15 @@ Node* Parser::parseFunctionCall() {
 	Node* name = parseName(NodeName::Usage::FUNCTION_CALL);
 	functioncall->addChild(name);
 	eat(TokenType::LPARENTH);
-	while (true) {
-		Node* expr = parseArithmeticExpression();
-		functioncall->addChild(expr);
-		if (token().type != TokenType::COMMA)
-			break;
+	if (token().type != TokenType::RPARENTH) {
+		while (true) {
+			Node* expr = parseArithmeticExpression();
+			functioncall->addChild(expr);
+			if (token().type != TokenType::COMMA)
+				break;
+		}
 	}
 	eat(TokenType::RPARENTH);
-	eat(TokenType::SEMICOLON);
 	return functioncall;
 }
 
@@ -165,8 +169,11 @@ Node* Parser::parseStatement() {
 		return parseDeclareAssign();
 
 	case TokenType::ID:
-		if (peek().type == TokenType::LPARENTH)
-			return parseFunctionCall();
+		if (peek().type == TokenType::LPARENTH) {
+			Node* node = parseFunctionCall();
+			eat(TokenType::SEMICOLON);
+			return node;
+		}
 		// else
 		return parseAssign();
 	}
