@@ -49,6 +49,18 @@ inline std::string dataTypeString(DataType& type) {
 	return "UNRECOGNISED TYPE";
 }
 
+inline std::string dataTypeInitial(DataType& type) {
+	switch (type) {
+	case DataType::UNKNOWN: return "?";
+	case DataType::VOID: return "v";
+	case DataType::INTEGER: return "i";
+	case DataType::DOUBLE: return "d";
+	case DataType::FLOAT: return "f";
+	case DataType::BOOL: return "b";
+	}
+	return "?";
+}
+
 class Node {
 
 public:

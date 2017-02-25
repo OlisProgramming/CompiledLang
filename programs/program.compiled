@@ -13,14 +13,14 @@ dldc 2.5
 dadd
 dldc 1.
 dadd
-istore 1
+dstore 1
 fldc 10.
 fldc 5.5
 fsub
 fldc 2.5
 fadd
-istore 2
+fstore 2
 bldc 1
-istore 3
+bstore 3
 bldc 0
-istore 4
+bstore 4

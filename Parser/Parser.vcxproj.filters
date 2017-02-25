@@ -26,5 +26,8 @@
     <ClInclude Include="interpreter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="stackitem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

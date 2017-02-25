@@ -32,7 +32,7 @@ void Translator::translate(Node* node) {
 	for (Node* child : node->children) translate(child);
 
 	switch (node->type) {
-	case NodeType::NUMBER:
+	case NodeType::NUMBER:  // Load constant
 		if (node->dataType == DataType::INTEGER)
 			send("ildc " + dynamic_cast<NodeNumber*>(node)->num);
 		else if (node->dataType == DataType::DOUBLE)
@@ -97,7 +97,7 @@ void Translator::translate(Node* node) {
 
 	case NodeType::DECLARE_ASSIGN:
 	case NodeType::ASSIGN:
-		send("istore " + std::to_string(static_cast<NodeName*>(node->children[0])->obfuscatedName));
+		send(dataTypeInitial(static_cast<NodeName*>(node->children[0])->dataType) + "store " + std::to_string(static_cast<NodeName*>(node->children[0])->obfuscatedName));
 		break;
 
 	case NodeType::PROGRAM:

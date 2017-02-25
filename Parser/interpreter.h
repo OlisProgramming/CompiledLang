@@ -5,10 +5,11 @@
 #include <sstream>
 #include <vector>
 #include <iostream>
+#include "stackitem.h"
 
 class Interpreter {
 
-	std::deque<int> stack;
+	std::deque<StackItem> stack;
 	std::deque<unsigned int> frames;
 
 public:
