@@ -10,5 +10,4 @@ println (int, return void): 1
 println (double, return void): 3
 println (float, return void): 5
 println (bool, return void): 7
-gendouble (return double): 9
-main program: 11
+main program: 9
