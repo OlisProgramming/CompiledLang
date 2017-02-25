@@ -43,6 +43,29 @@ Node* Parser::parseArithmeticUnit() {
 	}
 	else
 		node = parseNumber();
+
+	while (token().type == TokenType::CAST) {
+		eat(TokenType::CAST);
+		NodeCast* node2 = new NodeCast(tk.pos);
+		node2->addChild(node);
+		node2->typeToCast = token().contents;
+		node = node2;
+		switch (token().type) {
+
+		case TokenType::KWD_INT:
+			eat(TokenType::KWD_INT);
+			break;
+		case TokenType::KWD_DOUBLE:
+			eat(TokenType::KWD_DOUBLE);
+			break;
+		case TokenType::KWD_FLOAT:
+			eat(TokenType::KWD_FLOAT);
+			break;
+		default:
+			eat(TokenType::KWD_BOOL);
+		}
+	}
+
 	return node;
 }
 

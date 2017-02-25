@@ -68,6 +68,25 @@ void checkTypes(Node* node, std::unordered_map<std::string, DataType>& varTypes,
 		}
 		break;
 
+	case NodeType::CAST:
+		checkTypes(node->children[0], varTypes, dependencies);
+		if (static_cast<NodeCast*>(node)->typeToCast == "int") {
+			node->dataType = DataType::INTEGER;
+		}
+		else if (static_cast<NodeCast*>(node)->typeToCast == "double") {
+			node->dataType = DataType::DOUBLE;
+		}
+		else if (static_cast<NodeCast*>(node)->typeToCast == "float") {
+			node->dataType = DataType::FLOAT;
+		}
+		else if (static_cast<NodeCast*>(node)->typeToCast == "bool") {
+			node->dataType = DataType::BOOL;
+		}
+		else {
+			throw std::runtime_error("No way to cast variable to type " + static_cast<NodeCast*>(node)->typeToCast + "! Error at " + node->pos.str());
+		}
+		break;
+
 	case NodeType::FUNCTION_CALL: {
 		//NodeFunctionCall* functioncall = static_cast<NodeFunctionCall*>(node);
 		for (auto child : node->children)

@@ -48,6 +48,13 @@ void Translator::translate(Node* node) {
 			throw std::runtime_error("Cannot load constant of data type " + dataTypeString(node->dataType) + "! Error at " + node->pos.str());
 		return;
 
+	case NodeType::CAST: {
+		std::string to = dataTypeInitial(node->dataType);
+		std::string from = dataTypeInitial(node->children[0]->dataType);
+		send(from + "2" + to);
+		break;
+	}
+
 	case NodeType::ADD:
 		if (node->dataType == DataType::INTEGER)
 			send("iadd");

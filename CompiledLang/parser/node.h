@@ -11,7 +11,8 @@ enum class NodeType {
 	ADD, SUB, MUL, DIV,
 	ASSIGN, DECLARE_ASSIGN,
 	FUNCTION_CALL,
-	PROGRAM, NATIVE
+	PROGRAM, NATIVE,
+	CAST,
 };
 
 enum class DataType {
@@ -33,6 +34,7 @@ inline std::string nodeTypeString(NodeType& type) {
 	case NodeType::FUNCTION_CALL: return "FUNCTION_CALL";
 	case NodeType::PROGRAM: return "PROGRAM";
 	case NodeType::NATIVE: return "NATIVE";
+	case NodeType::CAST: return "CAST";
 	}
 	return "UNRECOGNISED NODE";
 }
@@ -87,6 +89,15 @@ public:
 
 	NodeNumber(std::string num, FilePos pos, DataType dataType) : Node(NodeType::NUMBER, pos, dataType), num(num) {}
 	std::string str() override { return num + " (" + dataTypeString(dataType) + ")"; }
+};
+
+class NodeCast : public Node {
+
+public:
+	std::string typeToCast;
+
+	NodeCast(FilePos pos) : Node(NodeType::CAST, pos), typeToCast("") {}
+	std::string str() override { return "cast to " + typeToCast + " (" + dataTypeString(dataType) + ")"; }
 };
 
 class NodeName : public Node {

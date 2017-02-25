@@ -91,6 +91,10 @@ Token Tokeniser::getNextToken() {
 
 	case '-':
 		advance();
+		if (chr() == '>') {
+			advance();
+			return Token("->", TokenType::CAST, getPos());
+		}
 		return Token("-", TokenType::SUB, getPos());
 
 	case '*':

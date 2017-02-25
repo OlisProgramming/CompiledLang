@@ -6,7 +6,7 @@ enum class TokenType {
 	INTEGER, FLOAT, DOUBLE, BOOL,
 	ADD, SUB, MUL, DIV,
 	LPARENTH, RPARENTH,
-	ID,
+	ID, CAST,
 	KWD_INT, KWD_DOUBLE, KWD_FLOAT, KWD_BOOL,
 	ASSIGN,
 	SEMICOLON, COMMA,
@@ -26,6 +26,7 @@ inline std::string tokenTypeString(TokenType type) {
 	case TokenType::LPARENTH:	return "LPARENTH";
 	case TokenType::RPARENTH:	return "RPARENTH";
 	case TokenType::ID:			return "ID";
+	case TokenType::CAST:		return "CAST";
 	case TokenType::KWD_INT:	return "KWD_INT";
 	case TokenType::KWD_DOUBLE:	return "KWD_DOUBLE";
 	case TokenType::KWD_FLOAT:	return "KWD_FLOAT";

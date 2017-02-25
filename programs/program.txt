@@ -1,4 +1,4 @@
-int vara = 1 + 2 + 3;
+int vara = 1 + ((2.5+1.5)->int) + 3;
 double varb = 1.5 + 2.7 + 1.;
 float varc = 10.f - 5.5f + 2.3f;
 bool vard = true;

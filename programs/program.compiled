@@ -9,7 +9,10 @@ bprintln
 return
 frame_alloc 5
 ildc 1
-ildc 2
+dldc 2.5
+dldc 1.5
+dadd
+d2i
 iadd
 ildc 3
 iadd
