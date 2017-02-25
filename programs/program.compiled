@@ -20,7 +20,10 @@ istore 0
 dldc 1.5
 dldc 2.7
 dadd
-dldc 1.
+fldc 4.14
+fldc 1
+fsub
+f2d
 dadd
 dstore 1
 fldc 10.

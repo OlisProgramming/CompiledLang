@@ -40,6 +40,43 @@ void Interpreter::exec(std::string command, unsigned int* commandIndex) {
 		frames.push_back(stack.size());
 		*commandIndex = arg1;
 	}
+
+	else if (code == "i2d") {
+		stack.back().doubleval = static_cast<double>(stack.back().intval);
+	}
+	else if (code == "i2f") {
+		stack.back().floatval = static_cast<float>(stack.back().intval);
+	}
+	else if (code == "i2b") {
+		stack.back().boolval = (stack.back().intval != 0);
+	}
+	else if (code == "d2i") {
+		stack.back().intval = static_cast<int>(stack.back().doubleval);
+	}
+	else if (code == "d2f") {
+		stack.back().floatval = static_cast<float>(stack.back().doubleval);
+	}
+	else if (code == "d2b") {
+		stack.back().boolval = (stack.back().doubleval != 0);
+	}
+	else if (code == "f2i") {
+		stack.back().intval = static_cast<int>(stack.back().floatval);
+	}
+	else if (code == "f2d") {
+		stack.back().doubleval = static_cast<double>(stack.back().floatval);
+	}
+	else if (code == "f2b") {
+		stack.back().boolval = (stack.back().floatval != 0);
+	}
+	else if (code == "b2i") {
+		stack.back().intval = (stack.back().boolval ? 1 : 0);
+	}
+	else if (code == "b2d") {
+		stack.back().doubleval = (stack.back().boolval ? 1. : 0.);
+	}
+	else if (code == "b2f") {
+		stack.back().floatval = (stack.back().boolval? 1.f: 0.f);
+	}
 	
 	else if (code == "iprintln") {
 		StackItem val = stack[stack.size() - 2];  // Arg 0.

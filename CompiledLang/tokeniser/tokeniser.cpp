@@ -56,9 +56,19 @@ Token Tokeniser::getNextToken() {
 				advance();
 				return Token(s, TokenType::FLOAT, getPos());
 			}
-			return Token(s, TokenType::DOUBLE, getPos());
+			else {
+				return Token(s, TokenType::DOUBLE, getPos());
+			}
 		}
-		return Token(s, TokenType::INTEGER, getPos());
+		else {
+			if (chr() == 'f') {
+				advance();
+				return Token(s, TokenType::FLOAT, getPos());
+			}
+			else {
+				return Token(s, TokenType::INTEGER, getPos());
+			}
+		}
 	}
 
 	else if (isalpha(ch)) {
