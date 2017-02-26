@@ -1,4 +1,4 @@
-goto 9
+goto 11
 iprintln
 return
 dprintln
@@ -7,11 +7,8 @@ fprintln
 return
 bprintln
 return
-frame_alloc 0
-ildc 2
-ildc 2
-ile
-goto 7
-bldc 1
-lognot
-goto 7
+new String
+sreturn
+frame_alloc 1
+goto 9
+pstore 0

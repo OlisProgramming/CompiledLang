@@ -12,14 +12,14 @@ void obfuscateNames(Node* program, std::string symbolFname, std::unordered_multi
 
 	int index = 0;
 	for (Node* node : program->children) {
-		if (node->type == NodeType::DECLARE_ASSIGN) {
+		if (node->type == NodeType::DECLARE_ASSIGN || node->type == NodeType::DECLARE) {
 			if (map.count(static_cast<NodeName*>(node->children[0])->name) > 0) {
 				throw std::runtime_error("Variable " + static_cast<NodeName*>(node->children[0])->name + " already exists! Error at " + node->pos.str());
 			}
 			static_cast<NodeName*>(node->children[0])->obfuscatedName = index;  // Name
 			map.emplace(static_cast<NodeName*>(node->children[0])->name, index);
 			//std::cout << index << ": " << static_cast<NodeName*>(node->children[0])->name << std::endl;
-			symbolFile << index++ << " (" << dataTypeString(node->children[0]->dataType) << "): " << static_cast<NodeName*>(node->children[0])->name << std::endl;
+			symbolFile << index++ << " (" << node->children[0]->dataType.str() << "): " << static_cast<NodeName*>(node->children[0])->name << std::endl;
 		}
 	}
 

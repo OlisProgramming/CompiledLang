@@ -10,16 +10,17 @@ enum class NodeType {
 	NAME,
 	ADD, SUB, MUL, DIV,
 	GT, LT, GE, LE, EQ, NE, LOGIC_NOT,
-	ASSIGN, DECLARE_ASSIGN,
+	ASSIGN, DECLARE_ASSIGN, DECLARE,
 	FUNCTION_CALL,
 	PROGRAM, NATIVE,
 	CAST,
 };
 
-enum class DataType {
+enum class DataTypePrimitive {
 	UNKNOWN,
 	VOID,
-	INTEGER, DOUBLE, FLOAT, BOOL
+	INTEGER, DOUBLE, FLOAT, BOOL,
+	POINTER
 };
 
 inline std::string nodeTypeString(NodeType& type) {
@@ -39,6 +40,7 @@ inline std::string nodeTypeString(NodeType& type) {
 	case NodeType::LOGIC_NOT:		return "LOGIC_NOT";
 	case NodeType::ASSIGN:			return "ASSIGN";
 	case NodeType::DECLARE_ASSIGN:	return "DECLARE_ASSIGN";
+	case NodeType::DECLARE:			return "DECLARE";
 	case NodeType::FUNCTION_CALL:	return "FUNCTION_CALL";
 	case NodeType::PROGRAM:			return "PROGRAM";
 	case NodeType::NATIVE:			return "NATIVE";
@@ -47,26 +49,49 @@ inline std::string nodeTypeString(NodeType& type) {
 	return "UNRECOGNISED NODE";
 }
 
-inline std::string dataTypeString(DataType& type) {
+inline std::string dataTypeString(DataTypePrimitive& type) {
 	switch (type) {
-	case DataType::UNKNOWN: return "unknown type";
-	case DataType::VOID: return "void";
-	case DataType::INTEGER: return "int";
-	case DataType::DOUBLE: return "double";
-	case DataType::FLOAT: return "float";
-	case DataType::BOOL: return "bool";
+	case DataTypePrimitive::UNKNOWN:	return "unknown type";
+	case DataTypePrimitive::VOID:		return "void";
+	case DataTypePrimitive::INTEGER:	return "int";
+	case DataTypePrimitive::DOUBLE:		return "double";
+	case DataTypePrimitive::FLOAT:		return "float";
+	case DataTypePrimitive::BOOL:		return "bool";
+	case DataTypePrimitive::POINTER:	return "pointer";
 	}
 	return "UNRECOGNISED TYPE";
 }
 
-inline std::string dataTypeInitial(DataType& type) {
+struct DataType {
+	DataTypePrimitive primitiveType;
+	std::string typeName;
+
+	DataType() : primitiveType(DataTypePrimitive::UNKNOWN), typeName("") {}
+	DataType(DataTypePrimitive primitiveType) : primitiveType(primitiveType), typeName("") {}
+	DataType(std::string typeName) : primitiveType(DataTypePrimitive::POINTER), typeName(typeName) {}
+	DataType(DataTypePrimitive primitiveType, std::string typeName) : primitiveType(primitiveType), typeName(typeName) {}
+	std::string str() { return dataTypeString(primitiveType) + " named \"" + typeName + "\""; }
+	bool operator ==(const DataType& other) const {
+		if (primitiveType != DataTypePrimitive::POINTER)
+			return (primitiveType == other.primitiveType);
+		return (typeName == other.typeName);
+	}
+	bool operator !=(const DataType& other) const {
+		if (primitiveType != DataTypePrimitive::POINTER)
+			return (primitiveType != other.primitiveType);
+		return (typeName != other.typeName);
+	}
+};
+
+inline std::string dataTypeInitial(DataTypePrimitive& type) {
 	switch (type) {
-	case DataType::UNKNOWN: return "?";
-	case DataType::VOID: return "v";
-	case DataType::INTEGER: return "i";
-	case DataType::DOUBLE: return "d";
-	case DataType::FLOAT: return "f";
-	case DataType::BOOL: return "b";
+	case DataTypePrimitive::UNKNOWN:	return "?";
+	case DataTypePrimitive::VOID:		return "v";
+	case DataTypePrimitive::INTEGER:	return "i";
+	case DataTypePrimitive::DOUBLE:		return "d";
+	case DataTypePrimitive::FLOAT:		return "f";
+	case DataTypePrimitive::BOOL:		return "b";
+	case DataTypePrimitive::POINTER:	return "p";
 	}
 	return "?";
 }
@@ -79,10 +104,10 @@ public:
 	FilePos pos;
 	std::vector<Node*> children;
 
-	Node(NodeType type, FilePos pos, DataType dataType = DataType::UNKNOWN) : type(type), pos(pos), dataType(dataType) {}
+	Node(NodeType type, FilePos pos, DataType dataType = DataType()) : type(type), pos(pos), dataType(dataType) {}
 	~Node() { for (Node* child : children) delete child; }
 	void addChild(Node* node) { children.push_back(node); }
-	virtual std::string str() { return "<" + nodeTypeString(type) + " (" + dataTypeString(dataType) + ")>"; }
+	virtual std::string str() { return "<" + nodeTypeString(type) + " (" + dataType.str() + ")>"; }
 	void print(unsigned int indent = 0) {
 		std::cout << std::string(indent, ' ') << str() << '\n';
 		for (auto child : children)
@@ -96,7 +121,7 @@ public:
 	std::string num;
 
 	NodeNumber(std::string num, FilePos pos, DataType dataType) : Node(NodeType::NUMBER, pos, dataType), num(num) {}
-	std::string str() override { return num + " (" + dataTypeString(dataType) + ")"; }
+	std::string str() override { return num + " (" + dataType.str() + ")"; }
 };
 
 class NodeCast : public Node {
@@ -105,7 +130,7 @@ public:
 	std::string typeToCast;
 
 	NodeCast(FilePos pos) : Node(NodeType::CAST, pos), typeToCast("") {}
-	std::string str() override { return "cast to " + typeToCast + " (" + dataTypeString(dataType) + ")"; }
+	std::string str() override { return "cast to " + typeToCast + " (" + dataType.str() + ")"; }
 };
 
 class NodeName : public Node {
@@ -120,7 +145,7 @@ public:
 	int obfuscatedName;
 
 	NodeName(std::string name, FilePos pos, Usage usage) : Node(NodeType::NAME, pos), name(name), obfuscatedName(-1), usage(usage) {}
-	std::string str() override { return name + ": " + std::to_string(obfuscatedName) + " (" + dataTypeString(dataType) + ")"; }
+	std::string str() override { return name + ": " + std::to_string(obfuscatedName) + " (" + dataType.str() + ")"; }
 };
 
 class NodeProgram : public Node {
@@ -143,14 +168,14 @@ struct FunctionSignature {
 	DataType returnType;
 	std::vector<DataType> argTypes;
 
-	FunctionSignature() {}
+	FunctionSignature() : returnType(DataTypePrimitive::UNKNOWN, "") {}
 	FunctionSignature(DataType returnType, std::vector<DataType> argTypes) : returnType(returnType), argTypes(argTypes) {}
 
 	std::string str() {
 		std::string args;
 		for (unsigned int i = 0; i < argTypes.size(); ++i)
-			args += dataTypeString(argTypes[i]) + ", ";
-		args += "return " + dataTypeString(returnType);
+			args += argTypes[i].str() + ", ";
+		args += "return " + returnType.str();
 		return args;
 	}
 };

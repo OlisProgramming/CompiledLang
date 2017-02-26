@@ -12,16 +12,16 @@ Node* Parser::parseNumber() {
 	switch (tk.type) {
 	case (TokenType::INTEGER):
 		eat(TokenType::INTEGER);
-		return new NodeNumber(tk.contents, tk.pos, DataType::INTEGER);
+		return new NodeNumber(tk.contents, tk.pos, DataType(DataTypePrimitive::INTEGER, ""));
 	case (TokenType::DOUBLE):
 		eat(TokenType::DOUBLE);
-		return new NodeNumber(tk.contents, tk.pos, DataType::DOUBLE);
+		return new NodeNumber(tk.contents, tk.pos, DataType(DataTypePrimitive::DOUBLE, ""));
 	case (TokenType::FLOAT):
 		eat(TokenType::FLOAT);
-		return new NodeNumber(tk.contents, tk.pos, DataType::FLOAT);
+		return new NodeNumber(tk.contents, tk.pos, DataType(DataTypePrimitive::FLOAT, ""));
 	case (TokenType::BOOL):
 		eat(TokenType::BOOL);
-		return new NodeNumber(tk.contents, tk.pos, DataType::BOOL);
+		return new NodeNumber(tk.contents, tk.pos, DataType(DataTypePrimitive::BOOL, ""));
 	}
 	eat(TokenType::INTEGER);
 	return nullptr;  // Will never get here, always quits on 'eat' because it passed through the switch.
@@ -210,7 +210,7 @@ Node* Parser::parseFunctionCall() {
 Node* Parser::parseAssign() {
 	Token& tk = token();
 	Node* name = parseName(NodeName::Usage::NONE);
-	//static_cast<NodeName*>(name)->dataType = DataType::INT;
+	//static_cast<NodeName*>(name)->dataType = DataTypePrimitive::INT;
 	eat(TokenType::ASSIGN);
 	Node* expr = parseArithmeticExpression();
 	Node* node = new Node(NodeType::ASSIGN, tk.pos);
@@ -226,29 +226,43 @@ Node* Parser::parseDeclareAssign() {
 	switch (token().type) {
 	case TokenType::KWD_INT:
 		eat(TokenType::KWD_INT);
-		type = DataType::INTEGER;
+		type.primitiveType = DataTypePrimitive::INTEGER;
 		break;
 	case TokenType::KWD_DOUBLE:
 		eat(TokenType::KWD_DOUBLE);
-		type = DataType::DOUBLE;
+		type.primitiveType = DataTypePrimitive::DOUBLE;
 		break;
 	case TokenType::KWD_FLOAT:
 		eat(TokenType::KWD_FLOAT);
-		type = DataType::FLOAT;
+		type.primitiveType = DataTypePrimitive::FLOAT;
+		break;
+	case TokenType::KWD_BOOL:
+		eat(TokenType::KWD_BOOL);
+		type.primitiveType = DataTypePrimitive::BOOL;
 		break;
 	default:
-		eat(TokenType::KWD_BOOL);
-		type = DataType::BOOL;
+		type.primitiveType = DataTypePrimitive::POINTER;
+		type.typeName = token().contents;
+		eat(TokenType::ID);
 		break;
 	}
 
 	Node* name = parseName(NodeName::Usage::NONE);
 	static_cast<NodeName*>(name)->dataType = type;
-	eat(TokenType::ASSIGN);
-	Node* expr = parseArithmeticExpression();
-	Node* node = new Node(NodeType::DECLARE_ASSIGN, tk.pos);
-	node->addChild(name);
-	node->addChild(expr);
+	
+	Node* node;
+	if (token().type == TokenType::ASSIGN) {
+		eat(TokenType::ASSIGN);
+		Node* expr = parseArithmeticExpression();
+		node = new Node(NodeType::DECLARE_ASSIGN, tk.pos);
+		node->addChild(name);
+		node->addChild(expr);
+	}
+	else {
+		node = new Node(NodeType::DECLARE, tk.pos);
+		node->addChild(name);
+	}
+
 	eat(TokenType::SEMICOLON);
 	return node;
 }
@@ -267,8 +281,12 @@ Node* Parser::parseStatement() {
 			eat(TokenType::SEMICOLON);
 			return node;
 		}
-		// else
-		return parseAssign();
+		else if (peek().type == TokenType::ID) {
+			return parseDeclareAssign();
+		}
+		else {
+			return parseAssign();
+		}
 	}
 
 	throw std::runtime_error("Invalid token to start statement with: " + token().str() + "!");

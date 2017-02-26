@@ -1,8 +1,10 @@
 VARIABLES (obfuscated name: name)
+0 (pointer named "String"): val
 
 FUNCTIONS (name: line)
-println (int, return void): 1
-println (double, return void): 3
-println (float, return void): 5
-println (bool, return void): 7
-main program: 9
+println (int named "", return void named ""): 1
+println (double named "", return void named ""): 3
+println (float named "", return void named ""): 5
+println (bool named "", return void named ""): 7
+String (return pointer named "String"): 9
+main program: 11
